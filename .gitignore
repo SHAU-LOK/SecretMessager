@@ -5,6 +5,10 @@ build
 local.properties
 captures
 app/build
+gradlew.bat
+gradle.properties
+gradlew
+
 /local.properties
 /.idea/workspace.xml
 /.idea/libraries
