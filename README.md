@@ -11,6 +11,7 @@
 
 - Material Design
 
+- Instant Run
 
 
 ### Description:
@@ -19,7 +20,8 @@
 
 so... 这是一个纯Android客户端的具有短信收发并且```加密/不加密```的app:)
 
-
+首次使用instant run，测试了一下，构建速度还真的挺快的
+ 
 
 ### Working Plan:
 
@@ -38,6 +40,8 @@ so... 这是一个纯Android客户端的具有短信收发并且```加密/不加
 
 
 ### Last Edit Time:
+
+- Sun Jan 17 11:40:39 CST 2016
 
 - Sun Jan 17 11:23:32 CST 2016
 
