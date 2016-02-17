@@ -1,4 +1,4 @@
-package com.shootloking.secretmessager.view;
+package com.shootloking.secretmessager.view.base;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -57,4 +57,6 @@ public abstract class SMFragment extends Fragment {
     public void onStart() {
         super.onStart();
     }
+
+    protected abstract String getClassName();
 }

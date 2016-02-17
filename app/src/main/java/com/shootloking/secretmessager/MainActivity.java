@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -12,12 +14,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.shootloking.secretmessager.view.SMActivity;
+import com.shootloking.secretmessager.view.ConversationListFragment;
+import com.shootloking.secretmessager.view.base.SMActivity;
 
 import butterknife.Bind;
 
 public class MainActivity extends SMActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    public static final String TAG = "MainActivity";
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -25,6 +30,8 @@ public class MainActivity extends SMActivity
     FloatingActionButton fab;
     @Bind(R.id.drawer_layout)
     DrawerLayout drawer;
+
+    Fragment fragment;
 
     @Override
     protected String getPageName() {
@@ -51,7 +58,12 @@ public class MainActivity extends SMActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        FragmentManager manager = getSupportFragmentManager();
+        fragment = new ConversationListFragment();
+        manager.beginTransaction().replace(R.id.content_main, fragment).commit();
     }
+
 
     @Override
     public void onBackPressed() {
@@ -109,4 +121,34 @@ public class MainActivity extends SMActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//
+//        switch (requestCode) {
+//            case SMApplication.REQUEST_CODE_READ_SMS_PERMISSIONS: {
+//                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                    Debug.log(TAG, "授权信息成功");
+////                    Toast.makeText(getApplicationContext(), "授权成功", Toast.LENGTH_SHORT).show();
+//                    initFragment();
+//                } else {
+//                    Toast.makeText(getApplicationContext(), "授权失败", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//            break;
+//            case SMApplication.REQUEST_CODE_READ_CONTACT_PERMISSIONS: {
+//                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                    Debug.log(TAG, "授权联系人成功");
+////                    Toast.makeText(getApplicationContext(), "授权成功", Toast.LENGTH_SHORT).show();
+//                    initFragment();
+//                } else {
+//                    Toast.makeText(getApplicationContext(), "授权失败", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//            break;
+//            default:
+//                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        }
+//    }
 }
