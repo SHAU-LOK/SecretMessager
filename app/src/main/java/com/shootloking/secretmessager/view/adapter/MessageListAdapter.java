@@ -2,9 +2,21 @@ package com.shootloking.secretmessager.view.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.shootloking.secretmessager.R;
+import com.shootloking.secretmessager.model.Message;
+import com.shootloking.secretmessager.utility.Utils;
+import com.shootloking.secretmessager.utility.log.Debug;
+
+import java.util.ArrayList;
 
 /**
  * Created by shau-lok on 2/17/16.
@@ -14,45 +26,107 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
 
     public static final String TAG = "MessageListAdapter";
 
-    public static final int INCOMING_ITEM = 0;
-    public static final int OUTGOING_ITEM = 1;
+    public static final int INCOMING_ITEM = 1;
+    public static final int OUTGOING_ITEM = 2;
 
 
     String displayName;
 
     Context context;
     Cursor cursor;
+    Uri uri;
+    ArrayList<Message> messages;
+    int threadId;
 
-    public MessageListAdapter(Context context) {
+    public MessageListAdapter(Context context, Uri uri) {
         this.context = context;
+        cursor = null;
+        this.uri = uri;
+
+        threadId = -1;
+        if (uri == null || uri.getLastPathSegment() == null) {
+            threadId = -1;
+        } else {
+            threadId = Integer.parseInt(uri.getLastPathSegment());
+        }
+
+//        Conversation conversation = Conversation.getConversation(context, threadId);
+//        Contact contact = conversation.getContact();
+//        String address = contact.getmNumber();
+//        String name = contact.getDisplayName();
+
+        messages = Message.getMessageArrayList(context, threadId, uri);
+
+        Debug.log(TAG, "messages list size: " + messages.size());
     }
 
 
     @Override
     public MessageListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return null;
+        LayoutInflater inflater = LayoutInflater.from(context);
+        int Resource;
+        boolean send;
+        if (viewType == INCOMING_ITEM) {
+            Resource = R.layout.list_item_message_in;
+            send = false;
+        } else {
+            Resource = R.layout.list_item_message_out;
+            send = true;
+        }
+
+        View view = inflater.inflate(Resource, parent, false);
+        MessageListViewHolder holder = new MessageListViewHolder(view);
+        if (!send) {
+            holder.user_avatar.setImageResource(R.mipmap.user_avatar);
+        }
+        return holder;
     }
 
     @Override
     public void onBindViewHolder(MessageListViewHolder holder, int position) {
 
+        Message message = messages.get(position);
+        holder.mData = message;
+        holder.message_content.setText(message.getBody());
+        holder.message_date.setText(Utils.DateFormat(context, message.getDate()));
+        holder.root.setOnClickListener(holder);
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return messages != null && messages.size() > 0 ? messages.size() : 0;
     }
 
     @Override
     public int getItemViewType(int position) {
-        return super.getItemViewType(position);
-        // TODO: 2/17/16 itemType
+
+        Message message = messages.get(position);
+
+        return message.getMsg_type();
     }
 
-    public class MessageListViewHolder extends RecyclerView.ViewHolder {
+
+    public class MessageListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        ImageView user_avatar;
+        TextView message_content;
+        TextView message_date;
+        View root;
+
+        Message mData;
+
 
         public MessageListViewHolder(View itemView) {
             super(itemView);
+            user_avatar = (ImageView) itemView.findViewById(R.id.user_avatar);
+            message_content = (TextView) itemView.findViewById(R.id.message_content);
+            message_date = (TextView) itemView.findViewById(R.id.message_date);
+            root = itemView;
+        }
+
+        @Override
+        public void onClick(View v) {
+            Toast.makeText(context, "onclick", Toast.LENGTH_SHORT).show();
         }
     }
 

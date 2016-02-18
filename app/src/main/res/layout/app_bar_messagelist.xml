@@ -8,6 +8,7 @@
     tools:context=".view.MessageListActivity">
 
     <android.support.design.widget.AppBarLayout
+        android:id="@+id/bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
@@ -21,6 +22,10 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/activity_messagelist" />
+    <include
+        layout="@layout/activity_messagelist"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize" />
 
 </android.support.design.widget.CoordinatorLayout>

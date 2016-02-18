@@ -1,8 +1,11 @@
 package com.shootloking.secretmessager.utility;
 
 import android.content.ContentUris;
+import android.content.Context;
 import android.net.Uri;
 import android.provider.ContactsContract;
+
+import java.text.SimpleDateFormat;
 
 /**
  * Created by shau-lok on 1/30/16.
@@ -20,5 +23,9 @@ public class Utils {
         return ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, id);
     }
 
+
+    public static String DateFormat(Context context, long date) {
+        return new SimpleDateFormat("yyyy-MM-dd h:mm a").format(date);
+    }
 
 }

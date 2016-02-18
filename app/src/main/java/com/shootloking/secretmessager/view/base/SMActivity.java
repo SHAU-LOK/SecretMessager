@@ -26,6 +26,7 @@ public abstract class SMActivity extends AppCompatActivity {
         mRes = getResources();
         mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setIndeterminate(true);
+        mProgressDialog.setTitle("加载中");
         mProgressDialog.setCancelable(false);
     }
 

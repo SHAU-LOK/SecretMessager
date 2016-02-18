@@ -68,7 +68,7 @@ public class SMApplication extends Application {
     }
 
     public static boolean requestPermission(final Activity activity, final String permission,
-                                     final int requestCode) {
+                                            final int requestCode) {
         Debug.log(TAG, "请求 permission: " + permission);
         if (!hasPermission(activity, permission)) {
             ActivityCompat.requestPermissions(activity, new String[]{permission}, requestCode);

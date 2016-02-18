@@ -162,6 +162,6 @@ public class Conversation extends BaseModel {
     }
 
     public Uri getUri() {
-        return Uri.withAppendedPath(Uri.parse(Constants.SMS_CONVERSATION_URI), String.valueOf(threadId));
+        return Uri.withAppendedPath(Uri.parse(Constants.SMS_CONVERSATION), String.valueOf(threadId));
     }
 }
