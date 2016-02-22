@@ -35,7 +35,7 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
     Context context;
     Cursor cursor;
     Uri uri;
-    ArrayList<Message> messages;
+    public ArrayList<Message> messages;
     int threadId;
 
     public MessageListAdapter(Context context, Uri uri) {
@@ -58,6 +58,15 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
         messages = Message.getMessageArrayList(context, threadId, uri);
 
         Debug.log(TAG, "messages list size: " + messages.size());
+    }
+
+    /**
+     * 刷新数据
+     */
+    public void updateResource() {
+        messages = Message.getMessageArrayList(context, threadId, uri);
+        if (messages != null)
+            notifyDataSetChanged();
     }
 
 
