@@ -18,6 +18,9 @@ import com.shootloking.secretmessager.utility.log.Debug;
 
 import java.util.ArrayList;
 
+import rx.Observable;
+import rx.functions.Action1;
+
 /**
  * Created by shau-lok on 2/17/16.
  */
@@ -35,7 +38,7 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
     Context context;
     Cursor cursor;
     Uri uri;
-    public ArrayList<Message> messages;
+    public ArrayList<Message> mMessages;
     int threadId;
 
     public MessageListAdapter(Context context, Uri uri) {
@@ -55,18 +58,25 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
 //        String address = contact.getmNumber();
 //        String name = contact.getDisplayName();
 
-        messages = Message.getMessageArrayList(context, threadId, uri);
+        mMessages = Message.getMessageArrayList(context, threadId, uri);
 
-        Debug.log(TAG, "messages list size: " + messages.size());
+        Debug.log(TAG, "messages list size: " + mMessages.size());
     }
 
     /**
      * 刷新数据
      */
     public void updateResource() {
-        messages = Message.getMessageArrayList(context, threadId, uri);
-        if (messages != null)
-            notifyDataSetChanged();
+        Observable.just(Message.getMessageArrayList(context, threadId, uri))
+                .subscribe(new Action1<ArrayList<Message>>() {
+                    @Override
+                    public void call(ArrayList<Message> messages) {
+                        mMessages = messages;
+                        if (messages != null)
+                            notifyDataSetChanged();
+                    }
+                });
+
     }
 
 
@@ -86,7 +96,7 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
         View view = inflater.inflate(Resource, parent, false);
         MessageListViewHolder holder = new MessageListViewHolder(view);
         if (!send) {
-            holder.user_avatar.setImageResource(R.mipmap.user_avatar);
+            holder.user_avatar.setImageResource(R.mipmap.ic_person);
         }
         return holder;
     }
@@ -94,7 +104,7 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
     @Override
     public void onBindViewHolder(MessageListViewHolder holder, int position) {
 
-        Message message = messages.get(position);
+        Message message = mMessages.get(position);
         holder.mData = message;
         holder.message_content.setText(message.getBody());
         holder.message_date.setText(Utils.DateFormat(context, message.getDate()));
@@ -103,13 +113,13 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
 
     @Override
     public int getItemCount() {
-        return messages != null && messages.size() > 0 ? messages.size() : 0;
+        return mMessages != null && mMessages.size() > 0 ? mMessages.size() : 0;
     }
 
     @Override
     public int getItemViewType(int position) {
 
-        Message message = messages.get(position);
+        Message message = mMessages.get(position);
 
         return message.getMsg_type();
     }

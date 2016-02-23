@@ -50,6 +50,9 @@ public class MainActivity extends SMActivity
             }
         });
 
+        /**
+         * kill navigationView
+         */
 //        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
 //                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
 //        drawer.setDrawerListener(toggle);
@@ -58,6 +61,25 @@ public class MainActivity extends SMActivity
 //        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
 //        navigationView.setNavigationItemSelectedListener(this);
 
+//        Subscriber<String> subscriber = new Subscriber<String>() {
+//            @Override
+//            public void onCompleted() {
+//                Debug.log("Subscriber", "on Completed()");
+//            }
+//
+//            @Override
+//            public void onError(Throwable e) {
+//                Debug.log("Subscriber", "on Error(): " + e.toString());
+//            }
+//
+//            @Override
+//            public void onNext(String s) {
+//                Debug.log("Subscriber", "on Next(): " + s);
+//            }
+//        };
+//        RxUtils.testRxJava().subscribe(subscriber);
+
+//        Subscription
         FragmentManager manager = getSupportFragmentManager();
         fragment = new ConversationListFragment();
         manager.beginTransaction().replace(R.id.content_main, fragment).commit();

@@ -71,9 +71,11 @@ public class Conversation extends BaseModel {
         this.read = cursor.getInt(INDEX_READ);
         this.count = cursor.getInt(INDEX_COUNT);
         this.personId = cursor.getLong(INDEX_PERSON);//联系人id
-        this.personName = ContactHelper.getName(context, personId);
+//        this.personName = ContactHelper.getName(context, personId);
         this.contact = ContactHelper.getContact(context, personId);
-//        ConversationAsyncHelper.fillConversation(context, this);
+//        this.contact = new Contact(personId);
+//        ConversationListUpdateContactTask task = new ConversationListUpdateContactTask(context,this, personId);
+//        task.update();
     }
 
 

@@ -58,5 +58,10 @@ public abstract class SMFragment extends Fragment {
         super.onStart();
     }
 
+    public Context getSelfContext() {
+        return getActivity();
+    }
+
+
     protected abstract String getClassName();
 }

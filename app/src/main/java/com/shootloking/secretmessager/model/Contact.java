@@ -13,10 +13,10 @@ public class Contact extends BaseModel {
     public static final String TAG = "contacts";
 
 
-    private String mName;
-    private String mNumber;
+    private String mName="";
+    private String mNumber="";
     private long mRecipientId = -1L;
-    private String mLookupKey;
+    private String mLookupKey="";
     private long mPersonId = -1L;
     private Uri mContactUri;
 

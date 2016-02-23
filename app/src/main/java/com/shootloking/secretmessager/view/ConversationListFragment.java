@@ -2,6 +2,8 @@ package com.shootloking.secretmessager.view;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,9 +15,12 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.shootloking.secretmessager.R;
+import com.shootloking.secretmessager.data.Constants;
 import com.shootloking.secretmessager.event.NotifyReceiveEvent;
 import com.shootloking.secretmessager.event.NotifySentSuccessEvent;
+import com.shootloking.secretmessager.model.Conversation;
 import com.shootloking.secretmessager.utility.RecycleViewSpacingDecoration;
+import com.shootloking.secretmessager.utility.Utils;
 import com.shootloking.secretmessager.utility.log.Debug;
 import com.shootloking.secretmessager.view.adapter.ConversationListAdapter;
 import com.shootloking.secretmessager.view.base.SMApplication;
@@ -23,6 +28,9 @@ import com.shootloking.secretmessager.view.base.SMFragment;
 
 import butterknife.Bind;
 import de.greenrobot.event.EventBus;
+import rx.Observable;
+import rx.Subscriber;
+import rx.functions.Action1;
 
 /**
  * Created by shau-lok on 1/31/16.
@@ -68,7 +76,10 @@ public class ConversationListFragment extends SMFragment {
         }
         adapter = new ConversationListAdapter(getActivity());
 //        ConversationAsyncHelper.setAdapter(adapter);
-        recyclerView.addItemDecoration(new RecycleViewSpacingDecoration(40));
+
+        refresh();
+
+        recyclerView.addItemDecoration(new RecycleViewSpacingDecoration(50));
         recyclerView.setAdapter(adapter);
 
     }
@@ -104,14 +115,45 @@ public class ConversationListFragment extends SMFragment {
 
 
     public void onEventMainThread(NotifyReceiveEvent event) {
-        // TODO: 2/22/16 收到信息
-
-
+        // 收到信息
+        refresh();
     }
 
     public void onEventMainThread(NotifySentSuccessEvent event) {
-        // TODO: 2/22/16 发送信息成功
+        //  发送信息成功
+        refresh();
     }
 
 
+    public void refresh() {
+        Observable<Cursor> myObservable = Observable.create(new Observable.OnSubscribe<Cursor>() {
+            @Override
+            public void call(Subscriber<? super Cursor> subscriber) {
+                Cursor cursor = getSelfContext().getContentResolver().query(Constants.URI_SIMPLE, Conversation.PROJECTION, Conversation.COLUMN_COUNT + ">0", null, Conversation.SORT_ORDER);
+                Debug.log(getClassName(), DatabaseUtils.dumpCursorToString(cursor));
+                if (Utils.isCursorValid(cursor)) {
+                    subscriber.onNext(cursor);
+//                    subscriber.onCompleted();
+                }
+            }
+        });
+        myObservable.subscribe(new Action1<Cursor>() {
+            @Override
+            public void call(Cursor cursor) {
+                adapter.changeCursor(cursor);
+            }
+        });
+    }
+
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//        ConversationListUpdateContactTask.setAdapter(adapter);
+//    }
+//
+//    @Override
+//    public void onDestroy() {
+//        super.onDestroy();
+//        ConversationListUpdateContactTask.setAdapter(null);
+//    }
 }

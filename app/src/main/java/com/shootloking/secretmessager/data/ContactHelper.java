@@ -79,7 +79,7 @@ public class ContactHelper {
         String number = null;
         try {
             Cursor cursor = context.getContentResolver().query(ContentUris.withAppendedId(Constants.URI_CAONICAL_ADDRESS, recipientId), null, null, null, null);
-            Debug.log(TAG, DatabaseUtils.dumpCursorToString(cursor));
+//            Debug.log(TAG, DatabaseUtils.dumpCursorToString(cursor));
             assert cursor != null;
             if (cursor.moveToFirst()) {
                 number = cursor.getString(cursor.getColumnIndex("address"));

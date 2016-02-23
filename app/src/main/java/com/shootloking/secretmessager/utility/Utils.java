@@ -2,6 +2,7 @@ package com.shootloking.secretmessager.utility;
 
 import android.content.ContentUris;
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.ContactsContract;
@@ -34,6 +35,10 @@ public class Utils {
     public static boolean isDefaultApp(final Context context) {
         return (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) ||
                 (context.getPackageName().equals(Telephony.Sms.getDefaultSmsPackage(context)));
+    }
+
+    public static boolean isCursorValid(Cursor cursor) {
+        return cursor != null && !cursor.isClosed();
     }
 
 }

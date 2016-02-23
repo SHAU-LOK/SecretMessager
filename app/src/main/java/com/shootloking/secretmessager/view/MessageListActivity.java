@@ -31,6 +31,8 @@ import com.shootloking.secretmessager.view.dialog.ShowDefaultSmsDialog;
 
 import butterknife.Bind;
 import de.greenrobot.event.EventBus;
+import rx.Observable;
+import rx.functions.Action1;
 
 /**
  * Created by shau-lok on 2/17/16.
@@ -117,12 +119,22 @@ public class MessageListActivity extends SMActivity {
             mFinish();
         }
 
-        Conversation conversations = Conversation.getConversation(getSelfContext(), threadId);
-        conv = conversations;
-        threadId = conversations.getThreadId();
+//        Observable<Conversation>.just(Conversation.getConversation(getSelfContext(), threadId)).
+
+        Observable.just(Conversation.getConversation(getSelfContext(), threadId))
+                .subscribe(new Action1<Conversation>() {
+                    @Override
+                    public void call(Conversation conversation) {
+                        conv = conversation;
+                    }
+                });
+
+//        Conversation conversations = Conversation.getConversation(getSelfContext(), threadId);
+//        conv = conversations;
+        threadId = conv.getThreadId();
         Debug.log(getPageName(), "threadId after: " + String.valueOf(threadId));
 
-        Contact contact = conversations.getContact();
+        Contact contact = conv.getContact();
         this.contact = contact;
         Debug.log(getPageName(), contact.toString());
         getSupportActionBar().setTitle(contact.getDisplayName());
