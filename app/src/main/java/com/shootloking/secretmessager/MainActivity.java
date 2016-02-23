@@ -3,7 +3,6 @@ package com.shootloking.secretmessager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
@@ -13,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.shootloking.secretmessager.view.ComposeActivity;
 import com.shootloking.secretmessager.view.ConversationListFragment;
 import com.shootloking.secretmessager.view.base.SMActivity;
 
@@ -45,8 +45,9 @@ public class MainActivity extends SMActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+                ComposeActivity.launch(getSelfContext());
             }
         });
 

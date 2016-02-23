@@ -41,6 +41,15 @@
         </activity>
 
         <activity
+            android:name=".view.ComposeActivity"
+            android:label="发送消息"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:launchMode="singleTask"
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
+
+        <activity
             android:name=".view.SendSmsActivity"
             android:theme="@style/AppTheme.NoActionBar">
 

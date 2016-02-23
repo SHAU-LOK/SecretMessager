@@ -6,9 +6,17 @@
     android:orientation="vertical">
 
     <EditText
-        android:singleLine="true"
+        android:id="@+id/edit_sendto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@android:style/TextAppearance.Material.Widget.EditText" />
+        android:background="@null"
+        android:hint="输入号码"
+        android:paddingBottom="20dp"
+        android:paddingLeft="10dp"
+        android:paddingTop="20dp"
+        android:singleLine="true"
+        android:textColor="@color/text_color_gray"
+        android:textColorHint="@color/text_color_hint"
+        android:textSize="18sp" />
 
 </LinearLayout>

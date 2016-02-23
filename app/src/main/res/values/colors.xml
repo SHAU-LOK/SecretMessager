@@ -15,4 +15,7 @@
     <color name="conversation_list_item_read">#999999</color>
     <color name="conversation_list_item_unread">#000000</color>
 
+    <color name="text_color_gray">#666666</color>
+    <color name="text_color_hint">#cccccc</color>
+
 </resources>
