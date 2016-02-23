@@ -14,6 +14,7 @@ import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.shootloking.secretmessager.data.SmsHelper;
+import com.shootloking.secretmessager.event.NotifyReceiveEvent;
 import com.shootloking.secretmessager.event.NotifySentSuccessEvent;
 import com.shootloking.secretmessager.utility.Utils;
 import com.shootloking.secretmessager.utility.log.Debug;
@@ -106,6 +107,10 @@ public class SmsReceiver extends BroadcastReceiver {
     private static void insertMessage(Context context) {
 
         mUri = SmsHelper.addMessageToInbox(context, mAddress, mBody, mDate);
+
+        if (mUri != null) {
+            EventBus.getDefault().post(new NotifyReceiveEvent());
+        }
 
         // TODO: 2/19/16 提示消息来
     }

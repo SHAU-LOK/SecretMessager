@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.shootloking.secretmessager.R;
 import com.shootloking.secretmessager.data.Constants;
 import com.shootloking.secretmessager.model.Conversation;
+import com.shootloking.secretmessager.utility.Utils;
 import com.shootloking.secretmessager.utility.log.Debug;
 import com.shootloking.secretmessager.view.MessageListActivity;
 
@@ -54,18 +55,19 @@ public class ConversationListAdapter extends RecyclerView.Adapter<ConversationLi
         View view = inflater.inflate(R.layout.list_item_conversion, parent, false);
 
         ConversionListViewHolder holder = new ConversionListViewHolder(view);
-        holder.logo.setImageResource(R.mipmap.user_avatar);
-
+//        holder.logo.setImageResource(R.mipmap.user_avatar);
+        holder.logo.setImageResource(R.mipmap.ic_person);
+//        holder.logo.setBackgroundResource(R.drawable.person_default_circle_bg);
         return holder;
     }
 
     @Override
     public void onBindViewHolder(ConversionListViewHolder holder, int position) {
         Conversation conversation = getItem(position);
-
+//
         holder.message.setText(conversation.getBody());
         holder.name.setText(conversation.getContact().getDisplayName());
-
+        holder.date.setText(Utils.DateFormat(context, conversation.getDate()));
         holder.mData = conversation;
         holder.root.setOnClickListener(holder);
 
@@ -87,6 +89,7 @@ public class ConversationListAdapter extends RecyclerView.Adapter<ConversationLi
         protected ImageView logo;
         protected TextView message;
         protected TextView name;
+        protected TextView date;
         protected View root;
 
         public Conversation mData;
@@ -96,6 +99,7 @@ public class ConversationListAdapter extends RecyclerView.Adapter<ConversationLi
             logo = (ImageView) itemView.findViewById(R.id.logo);
             message = (TextView) itemView.findViewById(R.id.message);
             name = (TextView) itemView.findViewById(R.id.name);
+            date = (TextView) itemView.findViewById(R.id.date);
             root = itemView;
         }
 

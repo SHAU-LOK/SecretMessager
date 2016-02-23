@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.shootloking.secretmessager.R;
+import com.shootloking.secretmessager.event.NotifyReceiveEvent;
+import com.shootloking.secretmessager.event.NotifySentSuccessEvent;
 import com.shootloking.secretmessager.utility.RecycleViewSpacingDecoration;
 import com.shootloking.secretmessager.utility.log.Debug;
 import com.shootloking.secretmessager.view.adapter.ConversationListAdapter;
@@ -20,6 +22,7 @@ import com.shootloking.secretmessager.view.base.SMApplication;
 import com.shootloking.secretmessager.view.base.SMFragment;
 
 import butterknife.Bind;
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by shau-lok on 1/31/16.
@@ -30,6 +33,7 @@ public class ConversationListFragment extends SMFragment {
     RecyclerView recyclerView;
 
     LinearLayoutManager linearLayoutManager;
+    ConversationListAdapter adapter;
 
     @Override
     protected String getClassName() {
@@ -51,7 +55,7 @@ public class ConversationListFragment extends SMFragment {
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(linearLayoutManager);
-
+        EventBus.getDefault().register(this);
         initAdapter();
     }
 
@@ -62,7 +66,7 @@ public class ConversationListFragment extends SMFragment {
         if (!SMApplication.hasPermission(getActivity(), Manifest.permission.READ_CONTACTS)) {
             SMApplication.requestPermission(getActivity(), Manifest.permission.READ_CONTACTS, SMApplication.REQUEST_CODE_READ_CONTACT_PERMISSIONS);
         }
-        ConversationListAdapter adapter = new ConversationListAdapter(getActivity());
+        adapter = new ConversationListAdapter(getActivity());
 //        ConversationAsyncHelper.setAdapter(adapter);
         recyclerView.addItemDecoration(new RecycleViewSpacingDecoration(40));
         recyclerView.setAdapter(adapter);
@@ -97,5 +101,17 @@ public class ConversationListFragment extends SMFragment {
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
+
+
+    public void onEventMainThread(NotifyReceiveEvent event) {
+        // TODO: 2/22/16 收到信息
+
+
+    }
+
+    public void onEventMainThread(NotifySentSuccessEvent event) {
+        // TODO: 2/22/16 发送信息成功
+    }
+
 
 }

@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.shootloking.secretmessager.R;
 import com.shootloking.secretmessager.data.Constants;
+import com.shootloking.secretmessager.event.NotifyReceiveEvent;
 import com.shootloking.secretmessager.event.NotifySentSuccessEvent;
 import com.shootloking.secretmessager.model.Contact;
 import com.shootloking.secretmessager.model.Conversation;
@@ -202,9 +203,15 @@ public class MessageListActivity extends SMActivity {
 //            adapter.messages = Message.getMessageArrayList()
 //            adapter.notifyDataSetChanged();
             adapter.updateResource();
-
         }
 
+    }
+
+    public void onEventMainThread(NotifyReceiveEvent event) {
+        if (event != null) {
+            Debug.log(getPageName(), "更新数据");
+            adapter.updateResource();
+        }
     }
 
 

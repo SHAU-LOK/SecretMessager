@@ -12,4 +12,7 @@
     <color name="colorBlack">#000000</color>
     <color name="transparent">#00000000</color>
 
+    <color name="conversation_list_item_read">#636363</color>
+    <color name="conversation_list_item_unread">#323232</color>
+
 </resources>
