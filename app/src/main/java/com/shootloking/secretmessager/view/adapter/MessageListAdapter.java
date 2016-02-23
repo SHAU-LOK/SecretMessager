@@ -1,8 +1,6 @@
 package com.shootloking.secretmessager.view.adapter;
 
 import android.content.Context;
-import android.database.Cursor;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,17 +12,11 @@ import android.widget.Toast;
 import com.shootloking.secretmessager.R;
 import com.shootloking.secretmessager.model.Message;
 import com.shootloking.secretmessager.utility.Utils;
-import com.shootloking.secretmessager.utility.log.Debug;
-
-import java.util.ArrayList;
-
-import rx.Observable;
-import rx.functions.Action1;
 
 /**
  * Created by shau-lok on 2/17/16.
  */
-public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.MessageListViewHolder> {
+public class MessageListAdapter extends RecyclerCursorAdapter<MessageListAdapter.MessageListViewHolder, Message> {
 
 
     public static final String TAG = "MessageListAdapter";
@@ -35,47 +27,46 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
 
     String displayName;
 
-    Context context;
-    Cursor cursor;
-    Uri uri;
-    public ArrayList<Message> mMessages;
-    int threadId;
+    //    Context context;
+//    Cursor cursor;
+//    Uri uri;
+    //    public ArrayList<Message> mMessages;
+//    int threadId;
 
-    public MessageListAdapter(Context context, Uri uri) {
-        this.context = context;
-        cursor = null;
-        this.uri = uri;
+    public MessageListAdapter(Context context) {
+        super(context);
+//        this.uri = uri;
 
-        threadId = -1;
-        if (uri == null || uri.getLastPathSegment() == null) {
-            threadId = -1;
-        } else {
-            threadId = Integer.parseInt(uri.getLastPathSegment());
-        }
+//        threadId = -1;
+//        if (uri == null || uri.getLastPathSegment() == null) {
+//            threadId = -1;
+//        } else {
+//            threadId = Integer.parseInt(uri.getLastPathSegment());
+//        }
 
 //        Conversation conversation = Conversation.getConversation(context, threadId);
 //        Contact contact = conversation.getContact();
 //        String address = contact.getmNumber();
 //        String name = contact.getDisplayName();
 
-        mMessages = Message.getMessageArrayList(context, threadId, uri);
+//        mMessages = Message.getMessageArrayList(context, threadId, uri);
 
-        Debug.log(TAG, "messages list size: " + mMessages.size());
+//        Debug.log(TAG, "messages list size: " + mMessages.size());
     }
 
     /**
      * 刷新数据
      */
     public void updateResource() {
-        Observable.just(Message.getMessageArrayList(context, threadId, uri))
-                .subscribe(new Action1<ArrayList<Message>>() {
-                    @Override
-                    public void call(ArrayList<Message> messages) {
-                        mMessages = messages;
-                        if (messages != null)
-                            notifyDataSetChanged();
-                    }
-                });
+//        Observable.just(Message.getMessageArrayList(context, threadId, uri))
+//                .subscribe(new Action1<ArrayList<Message>>() {
+//                    @Override
+//                    public void call(ArrayList<Message> messages) {
+//                        mMessages = messages;
+//                        if (messages != null)
+//                            notifyDataSetChanged();
+//                    }
+//                });
 
     }
 
@@ -104,7 +95,8 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
     @Override
     public void onBindViewHolder(MessageListViewHolder holder, int position) {
 
-        Message message = mMessages.get(position);
+//        Message message = mMessages.get(position);
+        Message message = getItem(position);
         holder.mData = message;
         holder.message_content.setText(message.getBody());
         holder.message_date.setText(Utils.DateFormat(context, message.getDate()));
@@ -112,14 +104,20 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
     }
 
     @Override
-    public int getItemCount() {
-        return mMessages != null && mMessages.size() > 0 ? mMessages.size() : 0;
+    protected Message getItem(int position) {
+        cursor.moveToPosition(position);
+        return Message.getMessage(context, cursor);
     }
+
+//    @Override
+//    public int getItemCount() {
+//        return mMessages != null && mMessages.size() > 0 ? mMessages.size() : 0;
+//    }
 
     @Override
     public int getItemViewType(int position) {
 
-        Message message = mMessages.get(position);
+        Message message = getItem(position);
 
         return message.getMsg_type();
     }

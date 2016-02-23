@@ -1,8 +1,6 @@
 package com.shootloking.secretmessager.view.adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -151,13 +149,8 @@ public class ConversationListAdapter extends RecyclerCursorAdapter<ConversationL
         public void onClick(View v) {
             if (mData == null) return;
 
-            Uri target = mData.getUri();
-            Intent intent = new Intent(context, MessageListActivity.class);
-//            Bundle bundle = new Bundle();
-//            bundle.putSerializable("Conversation", mData);
-            intent.setData(target);
-//            intent.putExtra("Bundle", bundle);
-            context.startActivity(intent);
+            MessageListActivity.launch(context, mData);
+
         }
     }
 

@@ -83,7 +83,7 @@ public class Conversation extends BaseModel {
         return new Conversation(context, cursor);
     }
 
-    public static Conversation getConversation(Context context, int threadId) {
+    public static Conversation getConversation(Context context, long threadId) {
         Conversation conversation = null;
         Cursor cursor = context.getContentResolver().query(Constants.URI_SIMPLE, PROJECTION,
                 COLUMN_ID + " = ?", new String[]{String.valueOf(threadId)}, null);

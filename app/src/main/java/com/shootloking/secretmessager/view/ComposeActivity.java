@@ -20,6 +20,9 @@ public class ComposeActivity extends SMActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_compose);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("发送消息");
+
 
     }
 }

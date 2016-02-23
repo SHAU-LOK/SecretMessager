@@ -13,6 +13,7 @@ public class Constants {
     public static final String SMS_URI = "content://sms";
     public static final String SMS_INBOX_URI = SMS_URI + "/inbox";
     public static final String SMS_SENT_URI = SMS_URI + "/sent";
+    public static final String SMS_CONVERSATION_URI = SMS_URI + "/conversations";
 
 
     public static final Uri URI_SMS_INBOX = Uri.parse(SMS_INBOX_URI);

@@ -1,6 +1,9 @@
 package com.shootloking.secretmessager.view;
 
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,6 +25,7 @@ import com.shootloking.secretmessager.event.NotifyReceiveEvent;
 import com.shootloking.secretmessager.event.NotifySentSuccessEvent;
 import com.shootloking.secretmessager.model.Contact;
 import com.shootloking.secretmessager.model.Conversation;
+import com.shootloking.secretmessager.model.Message;
 import com.shootloking.secretmessager.utility.RecycleViewSpacingDecoration;
 import com.shootloking.secretmessager.utility.Utils;
 import com.shootloking.secretmessager.utility.log.Debug;
@@ -32,6 +36,7 @@ import com.shootloking.secretmessager.view.dialog.ShowDefaultSmsDialog;
 import butterknife.Bind;
 import de.greenrobot.event.EventBus;
 import rx.Observable;
+import rx.Subscriber;
 import rx.functions.Action1;
 
 /**
@@ -41,8 +46,8 @@ public class MessageListActivity extends SMActivity {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
-    @Bind(R.id.conversation)
-    RecyclerView conversation;
+    @Bind(R.id.recycleView)
+    RecyclerView recyclerView;
     @Bind(R.id.checkbox_encrypt)
     CheckBox checkbox_encrypt;
     @Bind(R.id.send)
@@ -53,6 +58,7 @@ public class MessageListActivity extends SMActivity {
     Conversation conv;
     Contact contact;
     LinearLayoutManager linearLayoutManager;
+    long threadId = -1;
 
     MessageListAdapter adapter;
 
@@ -66,15 +72,12 @@ public class MessageListActivity extends SMActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.app_bar_messagelist);
-
         setSupportActionBar(toolbar);
-        Toast.makeText(this, "成功", Toast.LENGTH_LONG).show();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("消息");
+
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getSelfContext(), "back", Toast.LENGTH_SHORT).show();
                 mFinish();
             }
         });
@@ -82,19 +85,30 @@ public class MessageListActivity extends SMActivity {
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
                 send();
             }
         });
         EventBus.getDefault().register(this);
-        linearLayoutManager = new LinearLayoutManager(getSelfContext());
-        linearLayoutManager.setStackFromEnd(true);
-        conversation.setHasFixedSize(true);
-        conversation.setLayoutManager(linearLayoutManager);
 
-        parseIntent(getIntent());
-
+        try {
+            conv = (Conversation) getIntent().getSerializableExtra("conversation");
+            threadId = conv.getThreadId();
+            getSupportActionBar().setTitle(conv.getContact().getDisplayName());
+        } catch (ClassCastException e) {
+            Debug.error(getPageName(), e.toString());
+            Toast.makeText(getSelfContext(), "解析数据库失败", Toast.LENGTH_SHORT).show();
+        }
+//        parseIntent(getIntent());
+//        Uri uri = getIntent().getData();
+//        try {
+//            threadId = Integer.parseInt(uri.getLastPathSegment());
+//            Debug.log(getPageName(), "threadId before: " + String.valueOf(threadId));
+//        } catch (Exception e) {
+//            Debug.error(getPageName(), "解析threadId失败\n" + e.toString());
+//            Toast.makeText(getSelfContext(), "读取数据库失败", Toast.LENGTH_LONG).show();
+//            mFinish();
+//        }
+        initAdapter();
     }
 
 
@@ -109,7 +123,6 @@ public class MessageListActivity extends SMActivity {
             }
         }
 
-        int threadId = -1;
         try {
             threadId = Integer.parseInt(uri.getLastPathSegment());
             Debug.log(getPageName(), "threadId before: " + String.valueOf(threadId));
@@ -140,20 +153,49 @@ public class MessageListActivity extends SMActivity {
         getSupportActionBar().setTitle(contact.getDisplayName());
 
 
-        initAdapter(uri);
+        initAdapter();
     }
 
-    private void initAdapter(Uri uri) {
-        adapter = new MessageListAdapter(getSelfContext(), uri);
-        conversation.addItemDecoration(new RecycleViewSpacingDecoration(20));
-        conversation.setAdapter(adapter);
+    private void initAdapter() {
+        linearLayoutManager = new LinearLayoutManager(getSelfContext());
+        linearLayoutManager.setStackFromEnd(true);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        adapter = new MessageListAdapter(getSelfContext());
+        recyclerView.addItemDecoration(new RecycleViewSpacingDecoration(20));
+        recyclerView.setAdapter(adapter);
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onChanged() {
 //                super.onChanged();
 //                linearLayoutManager
                 int position = adapter.getItemCount() - 1;
-                linearLayoutManager.smoothScrollToPosition(conversation, null, position);
+                linearLayoutManager.smoothScrollToPosition(recyclerView, null, position);
+            }
+        });
+        refresh();
+    }
+
+
+    public void refresh() {
+        if (threadId <= 0) {
+            return;
+        }
+        Observable<Cursor> myObservable = Observable.create(new Observable.OnSubscribe<Cursor>() {
+            @Override
+            public void call(Subscriber<? super Cursor> subscriber) {
+                Cursor cursor = getSelfContext().getContentResolver().query(Uri.withAppendedPath(Uri.parse(Constants.SMS_CONVERSATION_URI), String.valueOf(threadId)), null, null, null, Message.SORT_ASC);
+                Debug.log(getPageName(), DatabaseUtils.dumpCursorToString(cursor));
+                if (Utils.isCursorValid(cursor)) {
+                    subscriber.onNext(cursor);
+//                    subscriber.onCompleted();
+                }
+            }
+        });
+        myObservable.subscribe(new Action1<Cursor>() {
+            @Override
+            public void call(Cursor cursor) {
+                adapter.changeCursor(cursor);
             }
         });
     }
@@ -212,9 +254,7 @@ public class MessageListActivity extends SMActivity {
     public void onEventMainThread(NotifySentSuccessEvent event) {
         if (event != null) {
             Debug.log(getPageName(), "更新数据");
-//            adapter.messages = Message.getMessageArrayList()
-//            adapter.notifyDataSetChanged();
-            adapter.updateResource();
+            refresh();
         }
 
     }
@@ -222,8 +262,17 @@ public class MessageListActivity extends SMActivity {
     public void onEventMainThread(NotifyReceiveEvent event) {
         if (event != null) {
             Debug.log(getPageName(), "更新数据");
-            adapter.updateResource();
+            refresh();
         }
+    }
+
+
+    public static void launch(Context context, Conversation conversation) {
+//        Uri target = conversation.getUri();
+        Intent intent = new Intent(context, MessageListActivity.class);
+//        intent.setData(target);
+        intent.putExtra("conversation", conversation);
+        context.startActivity(intent);
     }
 
 
