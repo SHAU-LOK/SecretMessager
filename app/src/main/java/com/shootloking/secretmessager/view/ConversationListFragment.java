@@ -30,7 +30,10 @@ import butterknife.Bind;
 import de.greenrobot.event.EventBus;
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by shau-lok on 1/31/16.
@@ -42,6 +45,9 @@ public class ConversationListFragment extends SMFragment {
 
     LinearLayoutManager linearLayoutManager;
     ConversationListAdapter adapter;
+
+    Subscription mSubscription;
+
 
     @Override
     protected String getClassName() {
@@ -65,6 +71,7 @@ public class ConversationListFragment extends SMFragment {
         recyclerView.setLayoutManager(linearLayoutManager);
         EventBus.getDefault().register(this);
         initAdapter();
+
     }
 
     private void initAdapter() {
@@ -126,7 +133,7 @@ public class ConversationListFragment extends SMFragment {
 
 
     public void refresh() {
-        Observable<Cursor> myObservable = Observable.create(new Observable.OnSubscribe<Cursor>() {
+        final Observable<Cursor> myObservables = Observable.create(new Observable.OnSubscribe<Cursor>() {
             @Override
             public void call(Subscriber<? super Cursor> subscriber) {
                 Cursor cursor = getSelfContext().getContentResolver().query(Constants.URI_SIMPLE, Conversation.PROJECTION, Conversation.COLUMN_COUNT + ">0", null, Conversation.SORT_ORDER);
@@ -137,23 +144,20 @@ public class ConversationListFragment extends SMFragment {
                 }
             }
         });
-        myObservable.subscribe(new Action1<Cursor>() {
-            @Override
-            public void call(Cursor cursor) {
-                adapter.changeCursor(cursor);
-            }
-        });
+
+        mSubscription = myObservables.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Cursor>() {
+                    @Override
+                    public void call(Cursor cursor) {
+                        adapter.changeCursor(cursor);
+                    }
+                });
     }
 
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//        ConversationListUpdateContactTask.setAdapter(adapter);
-//    }
-//
-//    @Override
-//    public void onDestroy() {
-//        super.onDestroy();
-//        ConversationListUpdateContactTask.setAdapter(null);
-//    }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mSubscription != null) mSubscription.unsubscribe();
+    }
 }

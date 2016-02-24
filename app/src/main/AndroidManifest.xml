@@ -42,10 +42,11 @@
 
         <activity
             android:name=".view.ComposeActivity"
-            android:label="发送消息"
             android:configChanges="orientation|keyboardHidden|navigation"
+            android:label="发送消息"
             android:launchMode="singleTask"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateUnchanged|adjustResize">
 
         </activity>
 

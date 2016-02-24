@@ -37,7 +37,10 @@ import butterknife.Bind;
 import de.greenrobot.event.EventBus;
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by shau-lok on 2/17/16.
@@ -61,6 +64,7 @@ public class MessageListActivity extends SMActivity {
     long threadId = -1;
 
     MessageListAdapter adapter;
+    Subscription mSubscription;
 
 
     @Override
@@ -192,12 +196,14 @@ public class MessageListActivity extends SMActivity {
                 }
             }
         });
-        myObservable.subscribe(new Action1<Cursor>() {
-            @Override
-            public void call(Cursor cursor) {
-                adapter.changeCursor(cursor);
-            }
-        });
+        mSubscription = myObservable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Cursor>() {
+                    @Override
+                    public void call(Cursor cursor) {
+                        adapter.changeCursor(cursor);
+                    }
+                });
     }
 
 
@@ -275,5 +281,9 @@ public class MessageListActivity extends SMActivity {
         context.startActivity(intent);
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mSubscription != null) mSubscription.unsubscribe();
+    }
 }
