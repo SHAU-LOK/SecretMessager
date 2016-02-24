@@ -70,24 +70,29 @@ public class ConversationListFragment extends SMFragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(linearLayoutManager);
         EventBus.getDefault().register(this);
+
+        adapter = new ConversationListAdapter(getActivity());
+        recyclerView.addItemDecoration(new RecycleViewSpacingDecoration(50));
+        recyclerView.setAdapter(adapter);
+
         initAdapter();
 
     }
 
     private void initAdapter() {
+
         if (!SMApplication.hasPermission(getActivity(), Manifest.permission.READ_SMS)) {
-            SMApplication.requestPermission(getActivity(), Manifest.permission.READ_SMS, SMApplication.REQUEST_CODE_READ_SMS_PERMISSIONS);
+//            SMApplication.requestPermission(getActivity(), Manifest.permission.READ_SMS, SMApplication.REQUEST_CODE_READ_SMS_PERMISSIONS);
+            //Fragment 跟 Activity 请求权限不一样
+            requestPermissions(new String[]{Manifest.permission.READ_SMS}, SMApplication.REQUEST_CODE_READ_SMS_PERMISSIONS);
+        } else if (!SMApplication.hasPermission(getActivity(), Manifest.permission.READ_CONTACTS)) {
+//            SMApplication.requestPermission(getActivity(), Manifest.permission.READ_CONTACTS, SMApplication.REQUEST_CODE_READ_CONTACT_PERMISSIONS);
+            requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, SMApplication.REQUEST_CODE_READ_CONTACT_PERMISSIONS);
+        } else {
+            refresh();
         }
-        if (!SMApplication.hasPermission(getActivity(), Manifest.permission.READ_CONTACTS)) {
-            SMApplication.requestPermission(getActivity(), Manifest.permission.READ_CONTACTS, SMApplication.REQUEST_CODE_READ_CONTACT_PERMISSIONS);
-        }
-        adapter = new ConversationListAdapter(getActivity());
 //        ConversationAsyncHelper.setAdapter(adapter);
 
-        refresh();
-
-        recyclerView.addItemDecoration(new RecycleViewSpacingDecoration(50));
-        recyclerView.setAdapter(adapter);
 
     }
 
@@ -100,6 +105,7 @@ public class ConversationListFragment extends SMFragment {
                     Debug.log(getClassName(), "授权信息成功");
 //                    Toast.makeText(getApplicationContext(), "授权成功", Toast.LENGTH_SHORT).show();
                     initAdapter();
+//                    refresh();
                 } else {
                     Toast.makeText(getActivity(), "授权失败", Toast.LENGTH_SHORT).show();
                 }
@@ -110,6 +116,7 @@ public class ConversationListFragment extends SMFragment {
                     Debug.log(getClassName(), "授权联系人成功");
 //                    Toast.makeText(getApplicationContext(), "授权成功", Toast.LENGTH_SHORT).show();
                     initAdapter();
+//                    refresh();
                 } else {
                     Toast.makeText(getActivity(), "授权失败", Toast.LENGTH_SHORT).show();
                 }

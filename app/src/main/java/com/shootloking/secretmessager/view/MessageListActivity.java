@@ -97,6 +97,7 @@ public class MessageListActivity extends SMActivity {
         try {
             conv = (Conversation) getIntent().getSerializableExtra("conversation");
             threadId = conv.getThreadId();
+            contact = conv.getContact();
             getSupportActionBar().setTitle(conv.getContact().getDisplayName());
         } catch (ClassCastException e) {
             Debug.error(getPageName(), e.toString());

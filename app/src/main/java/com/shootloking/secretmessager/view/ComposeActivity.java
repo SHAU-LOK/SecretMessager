@@ -2,15 +2,26 @@ package com.shootloking.secretmessager.view;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.shootloking.secretmessager.R;
+import com.shootloking.secretmessager.utility.Utils;
+import com.shootloking.secretmessager.utility.log.Debug;
 import com.shootloking.secretmessager.view.base.SMActivity;
+import com.shootloking.secretmessager.view.dialog.ShowDefaultSmsDialog;
 
 import butterknife.Bind;
+import butterknife.OnClick;
 
 /**
  * Created by shau-lok on 1/20/16.
@@ -19,6 +30,17 @@ public class ComposeActivity extends SMActivity {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
+    @Bind(R.id.edit_sendto)
+    EditText edit_sendto;
+    @Bind(R.id.checkbox_encrypt)
+    CheckBox checkbox_encrypt;
+    @Bind(R.id.composeEditText)
+    EditText composeEditText;
+    @Bind(R.id.send)
+    FloatingActionButton send;
+
+
+    String sendto;
 
 
     @Override
@@ -40,6 +62,19 @@ public class ComposeActivity extends SMActivity {
             }
         });
 
+
+    }
+
+
+    @OnClick(R.id.send)
+    void onSendClick() {
+        Debug.log(getPageName(), "send:");
+        sendto = edit_sendto.getText().toString().trim();
+        if (TextUtils.isEmpty(sendto)) {
+            Toast.makeText(getSelfContext(), "请输入联系人号码", Toast.LENGTH_SHORT).show();
+        } else {
+            send();
+        }
     }
 
 
@@ -48,5 +83,49 @@ public class ComposeActivity extends SMActivity {
         context.startActivity(intent);
     }
 
+
+    private void send() {
+
+        if (!TextUtils.isEmpty(composeEditText.getText())) {
+            if (Build.VERSION.SDK_INT < 19) {
+                sendSms();
+            } else {
+                if (!Utils.isDefaultApp(getSelfContext())) {
+                    new ShowDefaultSmsDialog(getSelfContext()).show();
+                } else {
+                    sendSms();
+                }
+            }
+        } else {
+            Toast.makeText(getSelfContext(), "内容为空", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    private void sendSms() {
+        if (checkbox_encrypt.isChecked()) {
+            Toast.makeText(getSelfContext(), "加密中", Toast.LENGTH_SHORT).show();
+            //// TODO: 2/19/16 加密处理
+        }
+        String body = composeEditText.getText().toString().trim();
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+
+        if (sendto == null) {
+            intent.setData(Uri.parse("sms:"));
+        } else {
+            intent.setData(Uri.parse("smsto:" + sendto));
+        }
+
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(Intent.EXTRA_TEXT, body);
+        intent.putExtra("sms_body", body);
+        intent.putExtra("AUTOSEND", "1");
+
+        startActivity(intent);
+        composeEditText.setText("");
+
+    }
 
 }
