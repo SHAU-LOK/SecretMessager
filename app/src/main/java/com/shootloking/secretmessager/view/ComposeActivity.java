@@ -2,7 +2,6 @@ package com.shootloking.secretmessager.view;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,6 +14,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.shootloking.secretmessager.R;
+import com.shootloking.secretmessager.sms.Transactions;
 import com.shootloking.secretmessager.utility.Utils;
 import com.shootloking.secretmessager.utility.log.Debug;
 import com.shootloking.secretmessager.view.base.SMActivity;
@@ -109,22 +109,10 @@ public class ComposeActivity extends SMActivity {
         }
         String body = composeEditText.getText().toString().trim();
 
-        Intent intent = new Intent(Intent.ACTION_SEND);
-
-        if (sendto == null) {
-            intent.setData(Uri.parse("sms:"));
-        } else {
-            intent.setData(Uri.parse("smsto:" + sendto));
-        }
-
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra(Intent.EXTRA_TEXT, body);
-        intent.putExtra("sms_body", body);
-        intent.putExtra("AUTOSEND", "1");
-
-        startActivity(intent);
+        Transactions transactions = new Transactions(this);
+        transactions.sendMessage(body, sendto);
         composeEditText.setText("");
+        mFinish();
 
     }
 
