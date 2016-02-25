@@ -7,6 +7,7 @@ import android.database.DatabaseUtils;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Telephony;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
@@ -65,6 +66,8 @@ public class MessageListActivity extends SMActivity {
 
     MessageListAdapter adapter;
     Subscription mSubscription;
+
+    private static String chooserPackage = null;
 
 
     @Override
@@ -235,16 +238,23 @@ public class MessageListActivity extends SMActivity {
 
         Intent intent = new Intent(Intent.ACTION_SEND);
 
+
         if (contact.getmNumber() == null) {
             intent.setData(Uri.parse("sms:"));
         } else {
             intent.setData(Uri.parse("smsto:" + contact.getmNumber()));
+        }
+        String defaultSmsPackageName = Telephony.Sms.getDefaultSmsPackage(this);
+        if (!TextUtils.isEmpty(defaultSmsPackageName)) {
+            intent.setPackage(defaultSmsPackageName);
         }
 
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(Intent.EXTRA_TEXT, body);
         intent.putExtra("sms_body", body);
         intent.putExtra("AUTOSEND", "1");
+//        intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME,
+//                getPackageName());
 
         startActivity(intent);
         composeEditText.setText("");
@@ -286,5 +296,13 @@ public class MessageListActivity extends SMActivity {
     protected void onDestroy() {
         super.onDestroy();
         if (mSubscription != null) mSubscription.unsubscribe();
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+//        PackageManager packageManager = getPackageManager();
+
     }
 }

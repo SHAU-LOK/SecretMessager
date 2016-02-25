@@ -52,6 +52,8 @@
 
         <activity
             android:name=".view.SendSmsActivity"
+            android:launchMode="singleTop"
+            android:windowSoftInputMode="stateUnchanged|adjustResize"
             android:theme="@style/AppTheme.NoActionBar">
 
             <intent-filter>
