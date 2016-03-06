@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.shootloking.secretmessager.R;
 import com.shootloking.secretmessager.data.Constants;
+import com.shootloking.secretmessager.encryption.EncryptManger;
 import com.shootloking.secretmessager.event.NotifyReceiveEvent;
 import com.shootloking.secretmessager.event.NotifySentSuccessEvent;
 import com.shootloking.secretmessager.model.Conversation;
@@ -76,6 +77,15 @@ public class ConversationListFragment extends SMFragment {
         recyclerView.setAdapter(adapter);
 
         initAdapter();
+
+        //Testing Encrypt
+        EncryptManger manger = EncryptManger.getInstance();
+        String cipher = manger.Encrypt("逗比");
+        Debug.log("加密", "-------加密前的Str: 逗比\n-------加密后的Str: " + cipher);
+
+        String plain = manger.Decrypt(cipher);
+        Debug.log("解密", "-------解密前的Str: " + cipher + "\n-------解密后的Str: " + plain);
+
 
     }
 

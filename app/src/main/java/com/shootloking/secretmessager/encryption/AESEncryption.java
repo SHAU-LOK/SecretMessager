@@ -222,25 +222,65 @@ public class AESEncryption {
         AddRoundKey(state, BLOCK_SIZE * round);
     }
 
-    public  void CFBEncrypt(byte[] plain, byte[] iv, int len) {
+    public void CFBEncrypt(byte[] plain, byte[] cipher, byte[] iv, int len) {
 
         int offset = 0;
-        byte[] ivec = new byte[BLOCK_SIZE];
+        byte[] ivCopy = new byte[BLOCK_SIZE];
 
         for (int i = 0; i < BLOCK_SIZE; i++) {
-            ivec[i] = iv[i];
+            ivCopy[i] = iv[i];
         }
 
-        while (len >=BLOCK_SIZE) {
+        while (len >= BLOCK_SIZE) {
+            AESEncrypt(ivCopy);
+
+            for (int i = 0; i < BLOCK_SIZE; i++) {
+                cipher[offset + i] = (byte) (plain[offset + i] ^ ivCopy[i]);
+                iv[i] = cipher[offset + i];
+            }
+            offset += BLOCK_SIZE;
+            len -= BLOCK_SIZE;
+        }
+        if (len > 0) {
+
+            AESEncrypt(ivCopy);
+
+            for (int i = 0; i < len; i++) {
+                cipher[i + offset] = (byte) (plain[offset + i] ^ ivCopy[i]);
+            }
 
         }
-
 
     }
 
+    public void CFBDecrypt(byte[] cipher, byte[] plain, byte[] iv, int len) {
 
+        int offset = 0;
+        byte[] ivCopy = new byte[BLOCK_SIZE];
 
+        for (int i = 0; i < BLOCK_SIZE; i++) {
+            ivCopy[i] = iv[i];
+        }
 
+        while (len >= BLOCK_SIZE) {
+            AESEncrypt(ivCopy);
+
+            for (int i = 0; i < BLOCK_SIZE; i++) {
+                plain[offset + i] = (byte) (cipher[offset + i] ^ ivCopy[i]);
+                ivCopy[i] = plain[offset + i];
+            }
+            offset += BLOCK_SIZE;
+            len -= BLOCK_SIZE;
+        }
+        if (len > 0) {
+            AESEncrypt(ivCopy);
+
+            for (int i = 0; i < len; i++) {
+                plain[offset + i] = (byte) (cipher[offset + i] ^ ivCopy[i]);
+            }
+        }
+
+    }
 
 
 }
