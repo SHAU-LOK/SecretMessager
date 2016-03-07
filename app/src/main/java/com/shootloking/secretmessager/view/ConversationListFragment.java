@@ -80,7 +80,7 @@ public class ConversationListFragment extends SMFragment {
 
         //Testing Encrypt
         EncryptManger manger = EncryptManger.getInstance();
-        String cipher = manger.Encrypt("逗比");
+        String cipher = manger.Encrypt("逗比逗比逗比逗比逗比逗比逗比逗比逗比逗比逗比逗比逗比逗比逗比逗比逗比逗比逗比逗比逗比");
         Debug.log("加密", "-------加密前的Str: 逗比\n-------加密后的Str: " + cipher);
 
         String plain = manger.Decrypt(cipher);

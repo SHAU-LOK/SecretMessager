@@ -31,6 +31,13 @@ public class AESEncryption {
      * @return
      */
     private static int GFMul(int a, int b) {
+
+        if (a == 1) {
+            return b & 0xFF;
+        }
+        if (b == 1) {
+            return a & 0xFF;
+        }
         int result = 0;
         int high_bit; //最高位
         a &= 0xff;
@@ -66,7 +73,7 @@ public class AESEncryption {
 
         subKeys = new int[subkey_size];
 
-        for (int i = 0; i < column; i++) {
+        for (int i = 0; i < column * 4; i++) {
             subKeys[i] = aes_keys[i]; //先把前边4个aes_keys赋值给subKeys
         }
 
@@ -138,7 +145,7 @@ public class AESEncryption {
         //第三行
         stateTmp[2] = state[10];
         stateTmp[6] = state[14];
-        stateTmp[10] = stateTmp[2];
+        stateTmp[10] = state[2];
         stateTmp[14] = state[6];
 
         //第四行
@@ -203,7 +210,7 @@ public class AESEncryption {
     }
 
 
-    private void AESEncrypt(byte[] state) {
+    private byte[] AESEncrypt(byte[] state) {
 
         AddRoundKey(state, 0);
 
@@ -218,8 +225,11 @@ public class AESEncryption {
         }
 
         SubBytes(state);
-        ShiftRows(state);
+        state = ShiftRows(state);
         AddRoundKey(state, BLOCK_SIZE * round);
+
+//        Debug.error("AES加密", new String(state));
+        return state;
     }
 
     public void CFBEncrypt(byte[] plain, byte[] cipher, byte[] iv, int len) {
@@ -232,18 +242,18 @@ public class AESEncryption {
         }
 
         while (len >= BLOCK_SIZE) {
-            AESEncrypt(ivCopy);
+            ivCopy = AESEncrypt(ivCopy);
 
             for (int i = 0; i < BLOCK_SIZE; i++) {
                 cipher[offset + i] = (byte) (plain[offset + i] ^ ivCopy[i]);
-                iv[i] = cipher[offset + i];
+                ivCopy[i] = cipher[offset + i];
             }
             offset += BLOCK_SIZE;
             len -= BLOCK_SIZE;
         }
         if (len > 0) {
 
-            AESEncrypt(ivCopy);
+           ivCopy =  AESEncrypt(ivCopy);
 
             for (int i = 0; i < len; i++) {
                 cipher[i + offset] = (byte) (plain[offset + i] ^ ivCopy[i]);
@@ -263,17 +273,17 @@ public class AESEncryption {
         }
 
         while (len >= BLOCK_SIZE) {
-            AESEncrypt(ivCopy);
+            ivCopy = AESEncrypt(ivCopy);
 
             for (int i = 0; i < BLOCK_SIZE; i++) {
                 plain[offset + i] = (byte) (cipher[offset + i] ^ ivCopy[i]);
-                ivCopy[i] = plain[offset + i];
+                ivCopy[i] = cipher[offset + i];
             }
             offset += BLOCK_SIZE;
             len -= BLOCK_SIZE;
         }
         if (len > 0) {
-            AESEncrypt(ivCopy);
+           ivCopy= AESEncrypt(ivCopy);
 
             for (int i = 0; i < len; i++) {
                 plain[offset + i] = (byte) (cipher[offset + i] ^ ivCopy[i]);
