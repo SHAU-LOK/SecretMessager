@@ -67,7 +67,6 @@ public class EncryptManger {
 
         encryption.CFBEncrypt(plains, cipher, iv, len);
         return Base64.encodeToString(cipher, Base64.NO_WRAP | Base64.URL_SAFE);
-//        return new String(Base64Coder.encode(cipher));
     }
 
     public String Decrypt(String cipher) {
@@ -79,8 +78,6 @@ public class EncryptManger {
         if (encryption == null) {
             initKey();
         }
-//        byte[] ciphers = Base64.decode(cipher, Base64.DEFAULT);
-//        byte[] ciphers = Base64Coder.decode(cipher);
         byte[] ciphers = Base64.decode(cipher, Base64.NO_WRAP | Base64.URL_SAFE);
         int len = ciphers.length;
         byte[] plains = new byte[len];
