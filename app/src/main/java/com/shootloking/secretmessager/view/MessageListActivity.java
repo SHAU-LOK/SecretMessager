@@ -230,7 +230,12 @@ public class MessageListActivity extends SMActivity {
         if (checkbox_encrypt.isChecked()) {
             Toast.makeText(getSelfContext(), "加密中", Toast.LENGTH_SHORT).show();
             //加密处理
-            body = EncryptManger.getInstance().Encrypt(body);
+            try {
+                body = EncryptManger.getInstance().Encrypt(body);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(getSelfContext(), "加密失败", Toast.LENGTH_SHORT).show();
+            }
         }
 
         Transactions transactions = new Transactions(this);
