@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.shootloking.secretmessager.R;
+import com.shootloking.secretmessager.encryption.EncryptManger;
 import com.shootloking.secretmessager.sms.Transactions;
 import com.shootloking.secretmessager.utility.Utils;
 import com.shootloking.secretmessager.utility.log.Debug;
@@ -103,11 +104,12 @@ public class ComposeActivity extends SMActivity {
     }
 
     private void sendSms() {
+        String body = composeEditText.getText().toString().trim();
         if (checkbox_encrypt.isChecked()) {
             Toast.makeText(getSelfContext(), "加密中", Toast.LENGTH_SHORT).show();
-            //// TODO: 2/19/16 加密处理
+            //加密处理
+            body = EncryptManger.getInstance().Encrypt(body);
         }
-        String body = composeEditText.getText().toString().trim();
 
         Transactions transactions = new Transactions(this);
         transactions.sendMessage(body, sendto);

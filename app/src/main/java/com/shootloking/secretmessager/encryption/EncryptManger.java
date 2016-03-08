@@ -52,12 +52,12 @@ public class EncryptManger {
     }
 
 
-    public String Encrypt(String plain) {
+    public String Encrypt(String plain) throws Exception {
         byte[] iv = gen16ByteFromStr(IV_KEY);
         return Encrypt(plain, iv);
     }
 
-    public String Encrypt(String plain, byte[] iv) {
+    public String Encrypt(String plain, byte[] iv) throws Exception {
         if (encryption == null) {
             initKey();
         }
@@ -69,12 +69,12 @@ public class EncryptManger {
         return Base64.encodeToString(cipher, Base64.NO_WRAP | Base64.URL_SAFE);
     }
 
-    public String Decrypt(String cipher) {
+    public String Decrypt(String cipher) throws Exception {
         byte[] iv = gen16ByteFromStr(IV_KEY);
         return Decrypt(cipher, iv);
     }
 
-    public String Decrypt(String cipher, byte[] iv) {
+    public String Decrypt(String cipher, byte[] iv) throws Exception {
         if (encryption == null) {
             initKey();
         }

@@ -14,8 +14,8 @@ public abstract class RecyclerCursorAdapter<VH extends RecyclerView.ViewHolder, 
         extends RecyclerView.Adapter<VH> {
 
 
+    //    protected SMActivity context;
     protected Context context;
-
     protected Cursor cursor;
 
     protected ItemClickListener<DataType> mItemClickListener;

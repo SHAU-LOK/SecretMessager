@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.shootloking.secretmessager.R;
 import com.shootloking.secretmessager.data.Constants;
+import com.shootloking.secretmessager.encryption.EncryptManger;
 import com.shootloking.secretmessager.event.NotifyReceiveEvent;
 import com.shootloking.secretmessager.event.NotifySentSuccessEvent;
 import com.shootloking.secretmessager.model.Contact;
@@ -118,49 +119,46 @@ public class MessageListActivity extends SMActivity {
     }
 
 
-    private void parseIntent(Intent intent) {
-        if (intent == null) return;
-
-        Uri uri = intent.getData();
-
-        if (uri != null) {
-            if (!uri.toString().startsWith(Constants.MMS_SMS_CONVERSATION)) {
-                uri = Uri.parse(Constants.MMS_SMS_CONVERSATION + uri.getLastPathSegment());
-            }
-        }
-
-        try {
-            threadId = Integer.parseInt(uri.getLastPathSegment());
-            Debug.log(getPageName(), "threadId before: " + String.valueOf(threadId));
-        } catch (Exception e) {
-            Debug.error(getPageName(), "解析threadId失败\n" + e.toString());
-            Toast.makeText(getSelfContext(), "读取数据库失败", Toast.LENGTH_LONG).show();
-            mFinish();
-        }
-
-//        Observable<Conversation>.just(Conversation.getConversation(getSelfContext(), threadId)).
-
-        Observable.just(Conversation.getConversation(getSelfContext(), threadId))
-                .subscribe(new Action1<Conversation>() {
-                    @Override
-                    public void call(Conversation conversation) {
-                        conv = conversation;
-                    }
-                });
-
-//        Conversation conversations = Conversation.getConversation(getSelfContext(), threadId);
-//        conv = conversations;
-        threadId = conv.getThreadId();
-        Debug.log(getPageName(), "threadId after: " + String.valueOf(threadId));
-
-        Contact contact = conv.getContact();
-        this.contact = contact;
-        Debug.log(getPageName(), contact.toString());
-        getSupportActionBar().setTitle(contact.getDisplayName());
-
-
-        initAdapter();
-    }
+//    private void parseIntent(Intent intent) {
+//        if (intent == null) return;
+//
+//        Uri uri = intent.getData();
+//
+//        if (uri != null) {
+//            if (!uri.toString().startsWith(Constants.MMS_SMS_CONVERSATION)) {
+//                uri = Uri.parse(Constants.MMS_SMS_CONVERSATION + uri.getLastPathSegment());
+//            }
+//        }
+//
+//        try {
+//            threadId = Integer.parseInt(uri.getLastPathSegment());
+//            Debug.log(getPageName(), "threadId before: " + String.valueOf(threadId));
+//        } catch (Exception e) {
+//            Debug.error(getPageName(), "解析threadId失败\n" + e.toString());
+//            Toast.makeText(getSelfContext(), "读取数据库失败", Toast.LENGTH_LONG).show();
+//            mFinish();
+//        }
+//
+//
+//        Observable.just(Conversation.getConversation(getSelfContext(), threadId))
+//                .subscribe(new Action1<Conversation>() {
+//                    @Override
+//                    public void call(Conversation conversation) {
+//                        conv = conversation;
+//                    }
+//                });
+//
+//        threadId = conv.getThreadId();
+//        Debug.log(getPageName(), "threadId after: " + String.valueOf(threadId));
+//
+//        Contact contact = conv.getContact();
+//        this.contact = contact;
+//        Debug.log(getPageName(), contact.toString());
+//        getSupportActionBar().setTitle(contact.getDisplayName());
+//
+//
+//        initAdapter();
+//    }
 
     private void initAdapter() {
         linearLayoutManager = new LinearLayoutManager(getSelfContext());
@@ -228,11 +226,12 @@ public class MessageListActivity extends SMActivity {
     }
 
     private void sendSms() {
+        String body = composeEditText.getText().toString().trim();
         if (checkbox_encrypt.isChecked()) {
             Toast.makeText(getSelfContext(), "加密中", Toast.LENGTH_SHORT).show();
-            //// TODO: 2/19/16 加密处理
+            //加密处理
+            body = EncryptManger.getInstance().Encrypt(body);
         }
-        String body = composeEditText.getText().toString().trim();
 
         Transactions transactions = new Transactions(this);
         transactions.sendMessage(body, contact.getmNumber());

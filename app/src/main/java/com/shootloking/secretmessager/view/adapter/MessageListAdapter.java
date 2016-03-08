@@ -1,17 +1,23 @@
 package com.shootloking.secretmessager.view.adapter;
 
+import android.app.FragmentManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.shootloking.secretmessager.R;
+import com.shootloking.secretmessager.encryption.EncryptManger;
 import com.shootloking.secretmessager.model.Message;
 import com.shootloking.secretmessager.utility.Utils;
+import com.shootloking.secretmessager.view.base.SMActivity;
+import com.shootloking.secretmessager.view.dialog.MessageListAlertDialog;
 
 /**
  * Created by shau-lok on 2/17/16.
@@ -27,6 +33,8 @@ public class MessageListAdapter extends RecyclerCursorAdapter<MessageListAdapter
 
     String displayName;
 
+    ArrayAdapter<String> adapter;
+
     //    Context context;
 //    Cursor cursor;
 //    Uri uri;
@@ -35,6 +43,7 @@ public class MessageListAdapter extends RecyclerCursorAdapter<MessageListAdapter
 
     public MessageListAdapter(Context context) {
         super(context);
+//        init(context);
 //        this.uri = uri;
 
 //        threadId = -1;
@@ -101,6 +110,7 @@ public class MessageListAdapter extends RecyclerCursorAdapter<MessageListAdapter
         holder.message_content.setText(message.getBody());
         holder.message_date.setText(Utils.DateFormat(context, message.getDate()));
         holder.root.setOnClickListener(holder);
+        holder.root.setOnLongClickListener(holder);
     }
 
     @Override
@@ -122,8 +132,7 @@ public class MessageListAdapter extends RecyclerCursorAdapter<MessageListAdapter
         return message.getMsg_type();
     }
 
-
-    public class MessageListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class MessageListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
         ImageView user_avatar;
         TextView message_content;
@@ -144,8 +153,60 @@ public class MessageListAdapter extends RecyclerCursorAdapter<MessageListAdapter
         @Override
         public void onClick(View v) {
             Toast.makeText(context, "onclick", Toast.LENGTH_SHORT).show();
+            showDialog(displayName, mData);
+
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+            Toast.makeText(context, "on long click", Toast.LENGTH_SHORT).show();
+            showDialog(displayName, mData);
+            return true;
         }
     }
 
+
+    private void showDialog(String title, final Message message) {
+        FragmentManager fm = ((SMActivity) context).getFragmentManager();
+
+        MessageListAlertDialog dialog = MessageListAlertDialog.newInstance(title);
+        dialog.setmListener(new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case MessageListAlertDialog.ENCRYPT_ITEM_TYPE: {
+                        //加密
+                        try {
+                            String cipher = EncryptManger.getInstance().Encrypt(message.getBody());
+                            Toast.makeText(context, cipher, Toast.LENGTH_LONG).show();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Toast.makeText(context, "加密失败", Toast.LENGTH_LONG).show();
+                        }
+                        break;
+                    }
+                    case MessageListAlertDialog.DECRYPT_ITEM_TYPE: {
+                        //解密
+                        try {
+                            String plain = EncryptManger.getInstance().Decrypt(message.getBody());
+                            Toast.makeText(context, plain, Toast.LENGTH_LONG).show();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Toast.makeText(context, "解密失败", Toast.LENGTH_LONG).show();
+                        }
+
+                        break;
+                    }
+                    case MessageListAlertDialog.COPY_ITEM_TYPE: {
+                        //复制
+                        Toast.makeText(context, "复制功能尚未开发", Toast.LENGTH_SHORT).show();
+                        break;
+                    }
+
+                }
+            }
+        });
+        dialog.show(fm, "messageDialog");
+    }
 
 }

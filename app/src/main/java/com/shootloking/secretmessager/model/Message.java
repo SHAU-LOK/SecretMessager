@@ -2,14 +2,10 @@ package com.shootloking.secretmessager.model;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.net.Uri;
 import android.provider.CallLog;
 
 import com.shootloking.secretmessager.data.ContactHelper;
-import com.shootloking.secretmessager.utility.log.Debug;
-
-import java.util.ArrayList;
 
 /**
  * Created by shau-lok on 2/18/16.
@@ -51,27 +47,27 @@ public class Message extends BaseModel {
         return new Message(context, cursor);
     }
 
-    public static ArrayList<Message> getMessageArrayList(Context context, int threadId, Uri uri) {
-
-        ArrayList<Message> messages = new ArrayList<>();
-//        Cursor cursor = context.getContentResolver().query(Uri.parse(Constants.MMS_SMS_URI), null, "where thread_id=" + threadId , null, null);
-        Cursor cursor = context.getContentResolver().query(Uri.withAppendedPath(Uri.parse("content://sms/conversations"), String.valueOf(threadId)), null, null, null, SORT_ASC);
-//        Debug.log(TAG , "withAppendedPath:  " + Uri.withAppendedPath(Constants.URI_CONVERSATION, String.valueOf(threadId)).toString());
-        Debug.log(TAG, DatabaseUtils.dumpCursorToString(cursor));
-        assert cursor != null;
-
-        if (cursor.moveToFirst()) {
-            do {
-                Message message = null;
-                message = getMessage(context, cursor);
-                messages.add(message);
-            } while (cursor.moveToNext());
-        } else {
-            Debug.error(TAG, "did not found message: " + String.valueOf(threadId));
-        }
-        cursor.close();
-        return messages;
-    }
+//    public static ArrayList<Message> getMessageArrayList(Context context, int threadId, Uri uri) {
+//
+//        ArrayList<Message> messages = new ArrayList<>();
+////        Cursor cursor = context.getContentResolver().query(Uri.parse(Constants.MMS_SMS_URI), null, "where thread_id=" + threadId , null, null);
+//        Cursor cursor = context.getContentResolver().query(Uri.withAppendedPath(Uri.parse("content://sms/conversations"), String.valueOf(threadId)), null, null, null, SORT_ASC);
+////        Debug.log(TAG , "withAppendedPath:  " + Uri.withAppendedPath(Constants.URI_CONVERSATION, String.valueOf(threadId)).toString());
+//        Debug.log(TAG, DatabaseUtils.dumpCursorToString(cursor));
+//        assert cursor != null;
+//
+//        if (cursor.moveToFirst()) {
+//            do {
+//                Message message = null;
+//                message = getMessage(context, cursor);
+//                messages.add(message);
+//            } while (cursor.moveToNext());
+//        } else {
+//            Debug.error(TAG, "did not found message: " + String.valueOf(threadId));
+//        }
+//        cursor.close();
+//        return messages;
+//    }
 
 
     //GETTER & SETTER
