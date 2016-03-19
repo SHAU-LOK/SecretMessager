@@ -3,7 +3,6 @@ package com.shootloking.secretmessager.view;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -189,7 +188,7 @@ public class MessageListActivity extends SMActivity {
             @Override
             public void call(Subscriber<? super Cursor> subscriber) {
                 Cursor cursor = getSelfContext().getContentResolver().query(Uri.withAppendedPath(Uri.parse(Constants.SMS_CONVERSATION_URI), String.valueOf(threadId)), null, null, null, Message.SORT_ASC);
-                Debug.log(getPageName(), DatabaseUtils.dumpCursorToString(cursor));
+//                Debug.log(getPageName(), DatabaseUtils.dumpCursorToString(cursor));
                 if (Utils.isCursorValid(cursor)) {
                     subscriber.onNext(cursor);
 //                    subscriber.onCompleted();

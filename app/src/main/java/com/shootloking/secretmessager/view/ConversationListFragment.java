@@ -3,7 +3,6 @@ package com.shootloking.secretmessager.view;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -145,7 +144,7 @@ public class ConversationListFragment extends SMFragment {
             @Override
             public void call(Subscriber<? super Cursor> subscriber) {
                 Cursor cursor = getSelfContext().getContentResolver().query(Constants.URI_SIMPLE, Conversation.PROJECTION, Conversation.COLUMN_COUNT + ">0", null, Conversation.SORT_ORDER);
-                Debug.log(getClassName(), DatabaseUtils.dumpCursorToString(cursor));
+//                Debug.log(getClassName(), DatabaseUtils.dumpCursorToString(cursor));
                 if (Utils.isCursorValid(cursor)) {
                     subscriber.onNext(cursor);
 //                    subscriber.onCompleted();

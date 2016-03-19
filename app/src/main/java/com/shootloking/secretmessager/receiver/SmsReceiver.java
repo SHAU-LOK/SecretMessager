@@ -73,8 +73,10 @@ public class SmsReceiver extends BroadcastReceiver {
             mDate = sms.getTimestampMillis();
 
             insertMessage(context);
+            updateNotification(context , mBody);
         }
     }
+
 
     private static void handleSent(Context context, Intent intent, int resultCode) {
         Uri uri = intent.getData();
@@ -114,4 +116,12 @@ public class SmsReceiver extends BroadcastReceiver {
 
         // TODO: 2/19/16 提示消息来
     }
+
+
+    private static void updateNotification(Context context, String mBody) {
+
+
+
+    }
+
 }

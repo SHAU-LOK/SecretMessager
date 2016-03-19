@@ -35,48 +35,9 @@ public class MessageListAdapter extends RecyclerCursorAdapter<MessageListAdapter
 
     ArrayAdapter<String> adapter;
 
-    //    Context context;
-//    Cursor cursor;
-//    Uri uri;
-    //    public ArrayList<Message> mMessages;
-//    int threadId;
 
     public MessageListAdapter(Context context) {
         super(context);
-//        init(context);
-//        this.uri = uri;
-
-//        threadId = -1;
-//        if (uri == null || uri.getLastPathSegment() == null) {
-//            threadId = -1;
-//        } else {
-//            threadId = Integer.parseInt(uri.getLastPathSegment());
-//        }
-
-//        Conversation conversation = Conversation.getConversation(context, threadId);
-//        Contact contact = conversation.getContact();
-//        String address = contact.getmNumber();
-//        String name = contact.getDisplayName();
-
-//        mMessages = Message.getMessageArrayList(context, threadId, uri);
-
-//        Debug.log(TAG, "messages list size: " + mMessages.size());
-    }
-
-    /**
-     * 刷新数据
-     */
-    public void updateResource() {
-//        Observable.just(Message.getMessageArrayList(context, threadId, uri))
-//                .subscribe(new Action1<ArrayList<Message>>() {
-//                    @Override
-//                    public void call(ArrayList<Message> messages) {
-//                        mMessages = messages;
-//                        if (messages != null)
-//                            notifyDataSetChanged();
-//                    }
-//                });
-
     }
 
 
@@ -119,10 +80,6 @@ public class MessageListAdapter extends RecyclerCursorAdapter<MessageListAdapter
         return Message.getMessage(context, cursor);
     }
 
-//    @Override
-//    public int getItemCount() {
-//        return mMessages != null && mMessages.size() > 0 ? mMessages.size() : 0;
-//    }
 
     @Override
     public int getItemViewType(int position) {
@@ -152,14 +109,14 @@ public class MessageListAdapter extends RecyclerCursorAdapter<MessageListAdapter
 
         @Override
         public void onClick(View v) {
-            Toast.makeText(context, "onclick", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(context, "onclick", Toast.LENGTH_SHORT).show();
             showDialog(displayName, mData);
 
         }
 
         @Override
         public boolean onLongClick(View v) {
-            Toast.makeText(context, "on long click", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(context, "on long click", Toast.LENGTH_SHORT).show();
             showDialog(displayName, mData);
             return true;
         }
