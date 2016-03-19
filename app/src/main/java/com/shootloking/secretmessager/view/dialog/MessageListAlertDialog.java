@@ -15,19 +15,20 @@ public class MessageListAlertDialog extends DialogFragment {
     ArrayAdapter<String> adapter;
     AlertDialog.Builder builder;
     DialogInterface.OnClickListener mListener;
-//    public static final String[] ARRAY_ITEM = new String[]{"加密信息", "解密信息", "复制信息", "删除信息"};
-    public static final String[] ARRAY_ITEM = new String[]{"加密信息", "解密信息", "复制信息"};
+    //    public static final String[] ARRAY_ITEM = new String[]{"加密信息", "解密信息", "复制信息", "删除信息"};
+//    public static final String[] ARRAY_ITEM = new String[]{"加密信息", "解密信息", "复制信息"};
+    public static final String[] ARRAY_ITEM = new String[]{"解密信息"};
 
 
     /**
      * 加密信息
      */
-    public static final int ENCRYPT_ITEM_TYPE = 0;
+    public static final int ENCRYPT_ITEM_TYPE = 1;
 
     /**
      * 解密信息
      */
-    public static final int DECRYPT_ITEM_TYPE = 1;
+    public static final int DECRYPT_ITEM_TYPE = 0;
 
     /**
      * 复制信息

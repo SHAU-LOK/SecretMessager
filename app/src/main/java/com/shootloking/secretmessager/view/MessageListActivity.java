@@ -1,9 +1,11 @@
 package com.shootloking.secretmessager.view;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -20,13 +22,14 @@ import android.widget.Toast;
 
 import com.shootloking.secretmessager.R;
 import com.shootloking.secretmessager.data.Constants;
-import com.shootloking.secretmessager.encryption.EncryptManger;
+import com.shootloking.secretmessager.event.EncryptEvent;
 import com.shootloking.secretmessager.event.NotifyReceiveEvent;
 import com.shootloking.secretmessager.event.NotifySentSuccessEvent;
 import com.shootloking.secretmessager.model.Contact;
 import com.shootloking.secretmessager.model.Conversation;
 import com.shootloking.secretmessager.model.Message;
 import com.shootloking.secretmessager.sms.Transactions;
+import com.shootloking.secretmessager.task.EncryptSendAsyncTask;
 import com.shootloking.secretmessager.utility.RecycleViewSpacingDecoration;
 import com.shootloking.secretmessager.utility.Utils;
 import com.shootloking.secretmessager.utility.log.Debug;
@@ -68,6 +71,8 @@ public class MessageListActivity extends SMActivity {
     Subscription mSubscription;
 
 
+    ProgressDialog progressDialog;
+
     @Override
     protected String getPageName() {
         return "MessageListActivity";
@@ -104,60 +109,9 @@ public class MessageListActivity extends SMActivity {
             Debug.error(getPageName(), e.toString());
             Toast.makeText(getSelfContext(), "解析数据库失败", Toast.LENGTH_SHORT).show();
         }
-//        parseIntent(getIntent());
-//        Uri uri = getIntent().getData();
-//        try {
-//            threadId = Integer.parseInt(uri.getLastPathSegment());
-//            Debug.log(getPageName(), "threadId before: " + String.valueOf(threadId));
-//        } catch (Exception e) {
-//            Debug.error(getPageName(), "解析threadId失败\n" + e.toString());
-//            Toast.makeText(getSelfContext(), "读取数据库失败", Toast.LENGTH_LONG).show();
-//            mFinish();
-//        }
         initAdapter();
     }
 
-
-//    private void parseIntent(Intent intent) {
-//        if (intent == null) return;
-//
-//        Uri uri = intent.getData();
-//
-//        if (uri != null) {
-//            if (!uri.toString().startsWith(Constants.MMS_SMS_CONVERSATION)) {
-//                uri = Uri.parse(Constants.MMS_SMS_CONVERSATION + uri.getLastPathSegment());
-//            }
-//        }
-//
-//        try {
-//            threadId = Integer.parseInt(uri.getLastPathSegment());
-//            Debug.log(getPageName(), "threadId before: " + String.valueOf(threadId));
-//        } catch (Exception e) {
-//            Debug.error(getPageName(), "解析threadId失败\n" + e.toString());
-//            Toast.makeText(getSelfContext(), "读取数据库失败", Toast.LENGTH_LONG).show();
-//            mFinish();
-//        }
-//
-//
-//        Observable.just(Conversation.getConversation(getSelfContext(), threadId))
-//                .subscribe(new Action1<Conversation>() {
-//                    @Override
-//                    public void call(Conversation conversation) {
-//                        conv = conversation;
-//                    }
-//                });
-//
-//        threadId = conv.getThreadId();
-//        Debug.log(getPageName(), "threadId after: " + String.valueOf(threadId));
-//
-//        Contact contact = conv.getContact();
-//        this.contact = contact;
-//        Debug.log(getPageName(), contact.toString());
-//        getSupportActionBar().setTitle(contact.getDisplayName());
-//
-//
-//        initAdapter();
-//    }
 
     private void initAdapter() {
         linearLayoutManager = new LinearLayoutManager(getSelfContext());
@@ -227,22 +181,34 @@ public class MessageListActivity extends SMActivity {
     private void sendSms() {
         String body = composeEditText.getText().toString().trim();
         if (checkbox_encrypt.isChecked()) {
-            Toast.makeText(getSelfContext(), "加密中", Toast.LENGTH_SHORT).show();
-            //加密处理
-            try {
-                body = EncryptManger.getInstance().Encrypt(body);
-            } catch (Exception e) {
-                e.printStackTrace();
-                Toast.makeText(getSelfContext(), "加密失败", Toast.LENGTH_SHORT).show();
-            }
+//            Toast.makeText(getSelfContext(), "加密中", Toast.LENGTH_SHORT).show();
+            //加密处理线程处理
+//            try {
+//                body = EncryptManger.getInstance().Encrypt(body);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//                Toast.makeText(getSelfContext(), "加密失败", Toast.LENGTH_SHORT).show();
+//            }
+            EncryptSendAsyncTask task = new EncryptSendAsyncTask(this);
+            task.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, body);
+        } else {
+
+            //不加密
+            Description = "不加密处理";
+            EncryptConsume = 0;
+            beforeLength = String.valueOf(body.getBytes().length);
+            afterLength = beforeLength;
+            plainText = body;
+            cipherText = body;
+            beforeSendTime = System.currentTimeMillis();
+            Transactions transactions = new Transactions(this);
+            transactions.sendMessage(body, contact.getmNumber());
+//            composeEditText.setText("");
         }
 
-        Transactions transactions = new Transactions(this);
-        transactions.sendMessage(body, contact.getmNumber());
-
-        composeEditText.setText("");
 
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -251,9 +217,62 @@ public class MessageListActivity extends SMActivity {
     }
 
 
+    /**
+     * 加密完成
+     *
+     * @param event
+     */
+    public void onEventMainThread(EncryptEvent event) {
+        if (event != null && !TextUtils.isEmpty(event.body)) {
+
+            Description = event.description;
+            EncryptConsume = event.EncryptConsumeTime;
+            beforeLength = event.beforeLength;
+            afterLength = event.afterLength;
+            plainText = event.plainText;
+            cipherText = event.cipherText;
+            beforeSendTime = System.currentTimeMillis();
+            Transactions transactions = new Transactions(this);
+            transactions.sendMessage(event.body, contact.getmNumber());
+//            composeEditText.setText("");
+        }
+    }
+
+
+    /**
+     * 统计相关
+     */
+    private String Description = "";  //加密or没加密
+    private long EncryptConsume = 0; //加密消耗时间
+    private String beforeLength = "0"; //明文原长度
+    private String afterLength = "0"; //加密后长度
+    private long beforeSendTime = 0;  //发送前的时间
+    private long afterSendTime = 0;  //发送后的时间
+    private String plainText = ""; //明文
+    private String cipherText = ""; //密文
+
+
     public void onEventMainThread(NotifySentSuccessEvent event) {
         if (event != null) {
             Debug.log(getPageName(), "更新数据");
+
+            if (event.time > 0) {
+                // TODO: 3/20/16  统计发送时间
+                afterSendTime = event.time;
+                long sendTime = afterSendTime - beforeSendTime;
+                Debug.log("统计", "各项统计: \n" +
+                        "方法: " + Description + "\n" +
+                        "明文字符串: " + plainText + "\n" +
+                        "明文字符串长度: " + beforeLength + "\n" +
+                        "密文字符串(Base64后): " + cipherText + "\n" +
+                        "密文字符串(Base64后)长度: " + afterLength + "\n" +
+                        "加密消耗时间: " + String.valueOf(EncryptConsume) + "ms \n" +
+                        "发送消耗时间: " + String.valueOf(sendTime) + "ms \n" +
+                        "总耗时: " + String.valueOf(EncryptConsume + sendTime ) + "ms \n"
+                );
+
+            }
+
             refresh();
         }
 
@@ -268,9 +287,7 @@ public class MessageListActivity extends SMActivity {
 
 
     public static void launch(Context context, Conversation conversation) {
-//        Uri target = conversation.getUri();
         Intent intent = new Intent(context, MessageListActivity.class);
-//        intent.setData(target);
         intent.putExtra("conversation", conversation);
         context.startActivity(intent);
     }

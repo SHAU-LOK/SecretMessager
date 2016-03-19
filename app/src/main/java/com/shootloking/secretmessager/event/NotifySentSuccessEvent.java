@@ -5,4 +5,6 @@ package com.shootloking.secretmessager.event;
  */
 public class NotifySentSuccessEvent {
 
+    public long time;
+
 }

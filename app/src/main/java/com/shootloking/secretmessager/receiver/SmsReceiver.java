@@ -73,7 +73,7 @@ public class SmsReceiver extends BroadcastReceiver {
             mDate = sms.getTimestampMillis();
 
             insertMessage(context);
-            updateNotification(context , mBody);
+            updateNotification(context, mBody);
         }
     }
 
@@ -83,12 +83,15 @@ public class SmsReceiver extends BroadcastReceiver {
         Debug.log(TAG, "uri: " + uri.toString() + " , result code: " + resultCode);
 
         if (resultCode == Activity.RESULT_OK) {
+            long currentTime = System.currentTimeMillis();
             ContentValues content = new ContentValues(1);
             content.put("type", CallLog.Calls.OUTGOING_TYPE);
             context.getContentResolver().update(uri, content, null, null);
             Debug.log(TAG, "发送成功");
             Toast.makeText(context, "发送成功", Toast.LENGTH_SHORT).show();
-            EventBus.getDefault().post(new NotifySentSuccessEvent());
+            NotifySentSuccessEvent event = new NotifySentSuccessEvent();
+            event.time = currentTime;
+            EventBus.getDefault().post(event);
         } else {
             Toast.makeText(context, "发送失败", Toast.LENGTH_SHORT).show();
             updateFailure(context, uri);
@@ -119,7 +122,6 @@ public class SmsReceiver extends BroadcastReceiver {
 
 
     private static void updateNotification(Context context, String mBody) {
-
 
 
     }

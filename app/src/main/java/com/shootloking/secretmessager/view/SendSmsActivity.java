@@ -112,7 +112,7 @@ public class SendSmsActivity extends SMActivity {
         ArrayList<PendingIntent> sentIntents = new ArrayList<>(size);
 
         try {
-            Debug.log(getPageName(), " send message to : " + to);
+//            Debug.log(getPageName(), " send message to : " + to);
             for (String msg : messages) {
                 Intent intent = new Intent(MESSAGE_SENT_ACTION, draft, this, SmsReceiver.class);
                 sentIntents.add(PendingIntent.getBroadcast(this, 0, intent, 0));

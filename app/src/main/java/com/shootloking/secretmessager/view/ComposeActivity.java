@@ -2,6 +2,7 @@ package com.shootloking.secretmessager.view;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,8 +15,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.shootloking.secretmessager.R;
-import com.shootloking.secretmessager.encryption.EncryptManger;
+import com.shootloking.secretmessager.event.EncryptEvent;
 import com.shootloking.secretmessager.sms.Transactions;
+import com.shootloking.secretmessager.task.EncryptSendAsyncTask;
 import com.shootloking.secretmessager.utility.Utils;
 import com.shootloking.secretmessager.utility.log.Debug;
 import com.shootloking.secretmessager.view.base.SMActivity;
@@ -23,6 +25,7 @@ import com.shootloking.secretmessager.view.dialog.ShowDefaultSmsDialog;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by shau-lok on 1/20/16.
@@ -56,6 +59,7 @@ public class ComposeActivity extends SMActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("发送消息");
+        EventBus.getDefault().register(this);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -106,21 +110,39 @@ public class ComposeActivity extends SMActivity {
     private void sendSms() {
         String body = composeEditText.getText().toString().trim();
         if (checkbox_encrypt.isChecked()) {
-            Toast.makeText(getSelfContext(), "加密中", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getSelfContext(), "加密中", Toast.LENGTH_SHORT).show();
             //加密处理
-            try {
-                body = EncryptManger.getInstance().Encrypt(body);
-            } catch (Exception e) {
-                e.printStackTrace();
-                Toast.makeText(getSelfContext(), "加密失败", Toast.LENGTH_SHORT).show();
-            }
+//            try {
+//                body = EncryptManger.getInstance().Encrypt(body);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//                Toast.makeText(getSelfContext(), "加密失败", Toast.LENGTH_SHORT).show();
+//            }
+
+            EncryptSendAsyncTask task = new EncryptSendAsyncTask(this);
+            task.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, body);
+        } else {
+
+//        Transactions transactions = new Transactions(this);
+//        transactions.sendMessage(body, sendto);
+//        composeEditText.setText("");
+//        mFinish();
+
+            Transactions transactions = new Transactions(this);
+            transactions.sendMessage(body, sendto);
+            composeEditText.setText("");
+            mFinish();
         }
 
-        Transactions transactions = new Transactions(this);
-        transactions.sendMessage(body, sendto);
-        composeEditText.setText("");
-        mFinish();
+    }
 
+    public void onEventMainThread(EncryptEvent event) {
+        if (event != null && !TextUtils.isEmpty(event.body)) {
+            Transactions transactions = new Transactions(this);
+            transactions.sendMessage(event.body, sendto);
+            composeEditText.setText("");
+            mFinish();
+        }
     }
 
 }

@@ -3,6 +3,7 @@ package com.shootloking.secretmessager.view.adapter;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,8 +14,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.shootloking.secretmessager.R;
-import com.shootloking.secretmessager.encryption.EncryptManger;
 import com.shootloking.secretmessager.model.Message;
+import com.shootloking.secretmessager.task.DecryptAsyncTask;
+import com.shootloking.secretmessager.task.EncryptAsyncTask;
 import com.shootloking.secretmessager.utility.Utils;
 import com.shootloking.secretmessager.view.base.SMActivity;
 import com.shootloking.secretmessager.view.dialog.MessageListAlertDialog;
@@ -133,24 +135,18 @@ public class MessageListAdapter extends RecyclerCursorAdapter<MessageListAdapter
                 switch (which) {
                     case MessageListAlertDialog.ENCRYPT_ITEM_TYPE: {
                         //加密
-                        try {
-                            String cipher = EncryptManger.getInstance().Encrypt(message.getBody());
-                            Toast.makeText(context, cipher, Toast.LENGTH_LONG).show();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            Toast.makeText(context, "加密失败", Toast.LENGTH_LONG).show();
-                        }
+
+                        EncryptAsyncTask task = new EncryptAsyncTask((SMActivity) context);
+                        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, message.getBody());
+
                         break;
                     }
                     case MessageListAlertDialog.DECRYPT_ITEM_TYPE: {
                         //解密
-                        try {
-                            String plain = EncryptManger.getInstance().Decrypt(message.getBody());
-                            Toast.makeText(context, plain, Toast.LENGTH_LONG).show();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            Toast.makeText(context, "解密失败", Toast.LENGTH_LONG).show();
-                        }
+
+                        DecryptAsyncTask task = new DecryptAsyncTask((SMActivity) context);
+                        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, message.getBody());
+
 
                         break;
                     }
