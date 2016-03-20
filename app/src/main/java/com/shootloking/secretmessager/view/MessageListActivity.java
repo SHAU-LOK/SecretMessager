@@ -16,8 +16,9 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.View;
-import android.widget.CheckBox;
+import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.shootloking.secretmessager.R;
@@ -51,12 +52,21 @@ import rx.schedulers.Schedulers;
  */
 public class MessageListActivity extends SMActivity {
 
+    public static final int ENCRYPT_ITEM_NULL = 0;
+    public static final int ENCRYPT_ITEM_AES = 1;
+    public static final int ENCRYPT_ITEM_RSA = 2;
+
+    private int EncryptType = ENCRYPT_ITEM_NULL;  //默认不加密
+
+
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.recycleView)
     RecyclerView recyclerView;
-    @Bind(R.id.checkbox_encrypt)
-    CheckBox checkbox_encrypt;
+    //    @Bind(R.id.checkbox_encrypt)
+//    CheckBox checkbox_encrypt;
+    @Bind(R.id.spinner)
+    Spinner spinner;
     @Bind(R.id.send)
     FloatingActionButton send;
     @Bind(R.id.composeEditText)
@@ -110,6 +120,18 @@ public class MessageListActivity extends SMActivity {
             Toast.makeText(getSelfContext(), "解析数据库失败", Toast.LENGTH_SHORT).show();
         }
         initAdapter();
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                EncryptType = position;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                EncryptType = ENCRYPT_ITEM_NULL;
+            }
+        });
     }
 
 
@@ -180,31 +202,56 @@ public class MessageListActivity extends SMActivity {
 
     private void sendSms() {
         String body = composeEditText.getText().toString().trim();
-        if (checkbox_encrypt.isChecked()) {
-//            Toast.makeText(getSelfContext(), "加密中", Toast.LENGTH_SHORT).show();
-            //加密处理线程处理
-//            try {
-//                body = EncryptManger.getInstance().Encrypt(body);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//                Toast.makeText(getSelfContext(), "加密失败", Toast.LENGTH_SHORT).show();
-//            }
-            EncryptSendAsyncTask task = new EncryptSendAsyncTask(this);
-            task.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, body);
-        } else {
+//        if (checkbox_encrypt.isChecked()) {
+////            Toast.makeText(getSelfContext(), "加密中", Toast.LENGTH_SHORT).show();
+//            //加密处理线程处理
+////            try {
+////                body = EncryptManger.getInstance().Encrypt(body);
+////            } catch (Exception e) {
+////                e.printStackTrace();
+////                Toast.makeText(getSelfContext(), "加密失败", Toast.LENGTH_SHORT).show();
+////            }
+//            EncryptSendAsyncTask task = new EncryptSendAsyncTask(this);
+//            task.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, body);
+//        } else {
+//
+//            //不加密
+//            Description = "不加密处理";
+//            EncryptConsume = 0;
+//            beforeLength = String.valueOf(body.getBytes().length);
+//            afterLength = beforeLength;
+//            plainText = body;
+//            cipherText = body;
+////            beforeSendTime = System.currentTimeMillis();
+//            beforeSendTime = System.nanoTime();
+//            Transactions transactions = new Transactions(this);
+//            transactions.sendMessage(body, contact.getmNumber());
+////            composeEditText.setText("");
+//        }
 
-            //不加密
-            Description = "不加密处理";
-            EncryptConsume = 0;
-            beforeLength = String.valueOf(body.getBytes().length);
-            afterLength = beforeLength;
-            plainText = body;
-            cipherText = body;
-//            beforeSendTime = System.currentTimeMillis();
-            beforeSendTime = System.nanoTime();
-            Transactions transactions = new Transactions(this);
-            transactions.sendMessage(body, contact.getmNumber());
-//            composeEditText.setText("");
+        switch (EncryptType) {
+            case ENCRYPT_ITEM_NULL:
+
+                Description = "不加密处理";
+                EncryptConsume = 0;
+                beforeLength = String.valueOf(body.getBytes().length);
+                afterLength = beforeLength;
+                plainText = body;
+                cipherText = body;
+                beforeSendTime = System.nanoTime();
+                Transactions transactions = new Transactions(this);
+                transactions.sendMessage(body, contact.getmNumber());
+
+
+                break;
+            case ENCRYPT_ITEM_AES:
+                EncryptSendAsyncTask task = new EncryptSendAsyncTask(this);
+                task.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, body);
+                break;
+            case ENCRYPT_ITEM_RSA:
+
+
+                break;
         }
 
 

@@ -9,14 +9,22 @@
         android:id="@+id/checkbox_encrypt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="10dp"
+        android:text="AES加密"
+        android:visibility="gone" />
+
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:text="加密" />
+        android:entries="@array/spinner_encrypt_method" />
 
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical">
 
 
         <android.support.design.widget.FloatingActionButton
