@@ -37,9 +37,11 @@ public class EncryptSendAsyncTask extends AsyncTask<String, Integer, Boolean> {
         String body;
         if (TextUtils.isEmpty(params[0])) return false;
         try {
-            long start = System.currentTimeMillis();
+//            long start = System.currentTimeMillis();
+            long start = System.nanoTime();
             body = EncryptManger.getInstance().Encrypt(params[0]);
-            long end = System.currentTimeMillis();
+//            long end = System.currentTimeMillis();
+            long end = System.nanoTime();
             long consumeTime = end - start;
             if (!TextUtils.isEmpty(body)) {
                 EncryptEvent event = new EncryptEvent(body);

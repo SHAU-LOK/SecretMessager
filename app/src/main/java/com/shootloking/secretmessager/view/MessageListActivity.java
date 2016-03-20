@@ -200,7 +200,8 @@ public class MessageListActivity extends SMActivity {
             afterLength = beforeLength;
             plainText = body;
             cipherText = body;
-            beforeSendTime = System.currentTimeMillis();
+//            beforeSendTime = System.currentTimeMillis();
+            beforeSendTime = System.nanoTime();
             Transactions transactions = new Transactions(this);
             transactions.sendMessage(body, contact.getmNumber());
 //            composeEditText.setText("");
@@ -231,7 +232,8 @@ public class MessageListActivity extends SMActivity {
             afterLength = event.afterLength;
             plainText = event.plainText;
             cipherText = event.cipherText;
-            beforeSendTime = System.currentTimeMillis();
+//            beforeSendTime = System.currentTimeMillis();
+            beforeSendTime = System.nanoTime();
             Transactions transactions = new Transactions(this);
             transactions.sendMessage(event.body, contact.getmNumber());
 //            composeEditText.setText("");
@@ -266,9 +268,9 @@ public class MessageListActivity extends SMActivity {
                         "明文字符串长度: " + beforeLength + "\n" +
                         "密文字符串(Base64后): " + cipherText + "\n" +
                         "密文字符串(Base64后)长度: " + afterLength + "\n" +
-                        "加密消耗时间: " + String.valueOf(EncryptConsume) + "ms \n" +
-                        "发送消耗时间: " + String.valueOf(sendTime) + "ms \n" +
-                        "总耗时: " + String.valueOf(EncryptConsume + sendTime ) + "ms \n"
+                        "加密消耗时间: " + String.valueOf(EncryptConsume) + "ns   约" + String.valueOf(EncryptConsume / 1000000.0f) + "ms \n" +
+                        "发送消耗时间: " + String.valueOf(sendTime) + "ns   约" + String.valueOf(sendTime / 1000000.0f) + "ms \n" +
+                        "总耗时: " + String.valueOf(EncryptConsume + sendTime) + "ns   约" + String.valueOf((EncryptConsume + sendTime) / 1000000.0f) + "ms \n"
                 );
 
             }

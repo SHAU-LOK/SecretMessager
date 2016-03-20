@@ -13,7 +13,6 @@ import android.text.TextUtils;
 
 import com.shootloking.secretmessager.data.Constants;
 import com.shootloking.secretmessager.receiver.SmsReceiver;
-import com.shootloking.secretmessager.utility.log.Debug;
 import com.shootloking.secretmessager.view.base.SMActivity;
 
 import java.net.URLDecoder;
@@ -65,7 +64,7 @@ public class SendSmsActivity extends SMActivity {
         if (intent == null) return false;
 
         String data = intent.getDataString();
-        Debug.log(getPageName(), "Intent getDataString(): " + data);
+//        Debug.log(getPageName(), "Intent getDataString(): " + data);
 
         if (!TextUtils.isEmpty(data) && data.contains(":")) {
             String t = data.split(":")[1];

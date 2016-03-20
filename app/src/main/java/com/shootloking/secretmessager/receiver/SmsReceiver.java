@@ -80,10 +80,11 @@ public class SmsReceiver extends BroadcastReceiver {
 
     private static void handleSent(Context context, Intent intent, int resultCode) {
         Uri uri = intent.getData();
-        Debug.log(TAG, "uri: " + uri.toString() + " , result code: " + resultCode);
+//        Debug.log(TAG, "uri: " + uri.toString() + " , result code: " + resultCode);
 
         if (resultCode == Activity.RESULT_OK) {
-            long currentTime = System.currentTimeMillis();
+//            long currentTime = System.currentTimeMillis();
+            long currentTime = System.nanoTime();
             ContentValues content = new ContentValues(1);
             content.put("type", CallLog.Calls.OUTGOING_TYPE);
             context.getContentResolver().update(uri, content, null, null);
