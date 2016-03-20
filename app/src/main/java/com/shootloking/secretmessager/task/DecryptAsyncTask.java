@@ -34,8 +34,15 @@ public class DecryptAsyncTask extends AsyncTask<String, Integer, String> {
     protected String doInBackground(String... params) {
         String body = params[0];
         try {
+            long start = System.nanoTime();
             String plain = EncryptManger.getInstance().Decrypt(body);
-//            Debug.log("解密", "解密字符串为: \n" + plain);
+            long end = System.nanoTime();
+            long consume = end - start;
+            Debug.log("统计", "解密完成: \n" +
+                    "解密前字符串(Base64加密后): " + body + "\n" +
+                    "解密后字符串(Base64解密后): " + plain + "\n" +
+                    "消耗时间: " + consume + "ns , 约 " + consume / 1000000.0f + "ms"
+            );
             Thread.sleep(2000);
             return plain;
         } catch (Exception e) {

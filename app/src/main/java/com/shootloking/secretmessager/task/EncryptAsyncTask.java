@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.shootloking.secretmessager.encryption.EncryptManger;
+import com.shootloking.secretmessager.utility.log.Debug;
 import com.shootloking.secretmessager.view.base.SMActivity;
 
 /**
@@ -35,7 +36,15 @@ public class EncryptAsyncTask extends AsyncTask<String, Integer, String> {
     protected String doInBackground(String... params) {
         String body = params[0];
         try {
+            long start = System.nanoTime();
             String cipher = EncryptManger.getInstance().Encrypt(body);
+            long end = System.nanoTime();
+            long consume = end - start;
+            Debug.log("统计", "加密完成: \n" +
+                    "加密前字符串(Base64加密前): " + body + "\n" +
+                    "加密后字符串(Base64加密后): " + cipher + "\n" +
+                    "消耗时间: " + consume + "ns , 约 " + consume / 1000000.0f + "ms"
+            );
             Thread.sleep(2000);
             return cipher;
         } catch (Exception e) {
