@@ -265,9 +265,9 @@ public class MessageListActivity extends SMActivity {
                 Debug.log("统计", "各项统计: \n" +
                         "方法: " + Description + "\n" +
                         "明文字符串: " + plainText + "\n" +
-                        "明文字符串长度: " + beforeLength + "\n" +
+                        "明文字符串长度: " + beforeLength + "字节 \n" +
                         "密文字符串(Base64后): " + cipherText + "\n" +
-                        "密文字符串(Base64后)长度: " + afterLength + "\n" +
+                        "密文字符串(Base64后)长度: " + afterLength + "字节 \n" +
                         "加密消耗时间: " + String.valueOf(EncryptConsume) + "ns   约" + String.valueOf(EncryptConsume / 1000000.0f) + "ms \n" +
                         "发送消耗时间: " + String.valueOf(sendTime) + "ns   约" + String.valueOf(sendTime / 1000000.0f) + "ms \n" +
                         "总耗时: " + String.valueOf(EncryptConsume + sendTime) + "ns   约" + String.valueOf((EncryptConsume + sendTime) / 1000000.0f) + "ms \n"

@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.shootloking.secretmessager.encryption.EncryptManger;
+import com.shootloking.secretmessager.utility.log.Debug;
 import com.shootloking.secretmessager.view.base.SMActivity;
 
 /**
@@ -34,6 +35,7 @@ public class DecryptAsyncTask extends AsyncTask<String, Integer, String> {
         String body = params[0];
         try {
             String plain = EncryptManger.getInstance().Decrypt(body);
+//            Debug.log("解密", "解密字符串为: \n" + plain);
             Thread.sleep(2000);
             return plain;
         } catch (Exception e) {
