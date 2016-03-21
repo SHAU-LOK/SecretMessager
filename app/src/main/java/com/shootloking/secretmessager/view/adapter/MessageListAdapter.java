@@ -11,12 +11,11 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.shootloking.secretmessager.R;
 import com.shootloking.secretmessager.model.Message;
-import com.shootloking.secretmessager.task.DecryptAsyncTask;
-import com.shootloking.secretmessager.task.EncryptAsyncTask;
+import com.shootloking.secretmessager.task.AESDecryptAsyncTask;
+import com.shootloking.secretmessager.task.RSADecryptAsyncTask;
 import com.shootloking.secretmessager.utility.Utils;
 import com.shootloking.secretmessager.view.base.SMActivity;
 import com.shootloking.secretmessager.view.dialog.MessageListAlertDialog;
@@ -133,29 +132,36 @@ public class MessageListAdapter extends RecyclerCursorAdapter<MessageListAdapter
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
-                    case MessageListAlertDialog.ENCRYPT_ITEM_TYPE: {
-                        //加密
+//                    case MessageListAlertDialog.ENCRYPT_ITEM_TYPE: {
+//                        //加密
+//
+//                        AESEncryptAsyncTask task = new AESEncryptAsyncTask((SMActivity) context);
+//                        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, message.getBody());
+//
+//                        break;
+//                    }
+                    case MessageListAlertDialog.AES_DECRYPT_ITEM_TYPE: {
+                        //AES解密
 
-                        EncryptAsyncTask task = new EncryptAsyncTask((SMActivity) context);
+                        AESDecryptAsyncTask task = new AESDecryptAsyncTask((SMActivity) context);
                         task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, message.getBody());
 
-                        break;
-                    }
-                    case MessageListAlertDialog.DECRYPT_ITEM_TYPE: {
-                        //解密
-
-                        DecryptAsyncTask task = new DecryptAsyncTask((SMActivity) context);
-                        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, message.getBody());
-
 
                         break;
                     }
-                    case MessageListAlertDialog.COPY_ITEM_TYPE: {
-                        //复制
-                        Toast.makeText(context, "复制功能尚未开发", Toast.LENGTH_SHORT).show();
+//                    case MessageListAlertDialog.COPY_ITEM_TYPE: {
+//                        //复制
+//                        Toast.makeText(context, "复制功能尚未开发", Toast.LENGTH_SHORT).show();
+//                        break;
+//                    }
+                    case MessageListAlertDialog.RSA_DECRYPT_ITEM_TYPE: {
+
+                        RSADecryptAsyncTask tasks = new RSADecryptAsyncTask((SMActivity) context);
+                        tasks.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, message.getBody());
+
+
                         break;
                     }
-
                 }
             }
         });

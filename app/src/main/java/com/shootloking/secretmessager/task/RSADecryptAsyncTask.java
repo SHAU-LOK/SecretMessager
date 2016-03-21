@@ -5,20 +5,18 @@ import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.widget.Toast;
 
-import com.shootloking.secretmessager.encryption.EncryptManger;
+import com.shootloking.secretmessager.encryption.RSAEncryptManager;
 import com.shootloking.secretmessager.utility.log.Debug;
 import com.shootloking.secretmessager.view.base.SMActivity;
 
 /**
- * Created by shau-lok on 3/20/16.
+ * Created by shau-lok on 3/21/16.
  */
-public class EncryptAsyncTask extends AsyncTask<String, Integer, String> {
-
+public class RSADecryptAsyncTask extends AsyncTask<String, Integer, String> {
     private ProgressDialog progressDialog;
     private SMActivity activity;
 
-
-    public EncryptAsyncTask(SMActivity activity) {
+    public RSADecryptAsyncTask(SMActivity activity) {
         this.activity = activity;
         progressDialog = new ProgressDialog(activity);
     }
@@ -27,31 +25,31 @@ public class EncryptAsyncTask extends AsyncTask<String, Integer, String> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        progressDialog.setMessage("加密中...");
+        progressDialog.setMessage("解密中...");
         progressDialog.show();
     }
-
 
     @Override
     protected String doInBackground(String... params) {
         String body = params[0];
         try {
             long start = System.nanoTime();
-            String cipher = EncryptManger.getInstance().Encrypt(body);
+            String plain = RSAEncryptManager.getInstance().decrypt(activity,body);
             long end = System.nanoTime();
             long consume = end - start;
-            Debug.log("统计", "加密完成: \n" +
-                    "加密前字符串(Base64加密前): " + body + "\n" +
-                    "加密后字符串(Base64加密后): " + cipher + "\n" +
+            Debug.log("统计", "RSA解密完成: \n" +
+                    "解密前字符串(Base64加密后): " + body + "\n" +
+                    "解密后字符串(Base64解密后): " + plain + "\n" +
                     "消耗时间: " + consume + "ns , 约 " + consume / 1000000.0f + "ms"
             );
             Thread.sleep(2000);
-            return cipher;
+            return plain;
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
     }
+
 
     @Override
     protected void onPostExecute(String plain) {
@@ -64,10 +62,8 @@ public class EncryptAsyncTask extends AsyncTask<String, Integer, String> {
             Toast.makeText(activity, plain, Toast.LENGTH_SHORT).show();
         } else {
             //fail
-            Toast.makeText(activity, "加密失败", Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, "解密失败", Toast.LENGTH_SHORT).show();
         }
 
     }
-
-
 }

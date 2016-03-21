@@ -88,9 +88,9 @@ public class AESEncryption {
                 //循环左移&替换字节
                 for (int j = 0; j < 4; j++) {
                     if (j < 3) {
-                        subKeys[i + j] = Common.SBOX[subKeys[i - 4 + j + 1] & 0xFF];//前一列下边三个向上移
+                        subKeys[i + j] = AESCommon.SBOX[subKeys[i - 4 + j + 1] & 0xFF];//前一列下边三个向上移
                     } else {
-                        subKeys[i + j] = Common.SBOX[subKeys[i - 4] & 0xFF]; //前一列最顶那个移到最底
+                        subKeys[i + j] = AESCommon.SBOX[subKeys[i - 4] & 0xFF]; //前一列最顶那个移到最底
                     }
                 }
 
@@ -117,7 +117,7 @@ public class AESEncryption {
      */
     private void SubBytes(byte[] state) {
         for (int i = 0; i < BLOCK_SIZE; i++) {
-            state[i] = (byte) Common.SBOX[state[i] & 0xff];
+            state[i] = (byte) AESCommon.SBOX[state[i] & 0xff];
         }
     }
 

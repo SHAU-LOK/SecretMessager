@@ -18,7 +18,8 @@ import android.widget.Toast;
 import com.shootloking.secretmessager.R;
 import com.shootloking.secretmessager.event.EncryptEvent;
 import com.shootloking.secretmessager.sms.Transactions;
-import com.shootloking.secretmessager.task.EncryptSendAsyncTask;
+import com.shootloking.secretmessager.task.AESEncryptSendAsyncTask;
+import com.shootloking.secretmessager.task.RSAEncryptSendAsyncTask;
 import com.shootloking.secretmessager.utility.Utils;
 import com.shootloking.secretmessager.utility.log.Debug;
 import com.shootloking.secretmessager.view.base.SMActivity;
@@ -133,13 +134,13 @@ public class ComposeActivity extends SMActivity {
 ////            Toast.makeText(getSelfContext(), "加密中", Toast.LENGTH_SHORT).show();
 //            //加密处理
 ////            try {
-////                body = EncryptManger.getInstance().Encrypt(body);
+////                body = AESEncryptManger.getInstance().Encrypt(body);
 ////            } catch (Exception e) {
 ////                e.printStackTrace();
 ////                Toast.makeText(getSelfContext(), "加密失败", Toast.LENGTH_SHORT).show();
 ////            }
 //
-//            EncryptSendAsyncTask task = new EncryptSendAsyncTask(this);
+//            AESEncryptSendAsyncTask task = new AESEncryptSendAsyncTask(this);
 //            task.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, body);
 //        } else {
 //
@@ -165,11 +166,12 @@ public class ComposeActivity extends SMActivity {
 
                 break;
             case ENCRYPT_ITEM_AES:
-                EncryptSendAsyncTask task = new EncryptSendAsyncTask(this);
+                AESEncryptSendAsyncTask task = new AESEncryptSendAsyncTask(this);
                 task.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, body);
                 break;
             case ENCRYPT_ITEM_RSA:
-
+                RSAEncryptSendAsyncTask tasks = new RSAEncryptSendAsyncTask(this);
+                tasks.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, body);
 
                 break;
         }

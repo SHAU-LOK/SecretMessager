@@ -5,19 +5,19 @@ import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.widget.Toast;
 
-import com.shootloking.secretmessager.encryption.EncryptManger;
+import com.shootloking.secretmessager.encryption.AESEncryptManger;
 import com.shootloking.secretmessager.utility.log.Debug;
 import com.shootloking.secretmessager.view.base.SMActivity;
 
 /**
  * Created by shau-lok on 3/20/16.
  */
-public class DecryptAsyncTask extends AsyncTask<String, Integer, String> {
+public class AESDecryptAsyncTask extends AsyncTask<String, Integer, String> {
 
     private ProgressDialog progressDialog;
     private SMActivity activity;
 
-    public DecryptAsyncTask(SMActivity activity) {
+    public AESDecryptAsyncTask(SMActivity activity) {
         this.activity = activity;
         progressDialog = new ProgressDialog(activity);
     }
@@ -35,10 +35,10 @@ public class DecryptAsyncTask extends AsyncTask<String, Integer, String> {
         String body = params[0];
         try {
             long start = System.nanoTime();
-            String plain = EncryptManger.getInstance().Decrypt(body);
+            String plain = AESEncryptManger.getInstance().Decrypt(body);
             long end = System.nanoTime();
             long consume = end - start;
-            Debug.log("统计", "解密完成: \n" +
+            Debug.log("统计", "AES解密完成: \n" +
                     "解密前字符串(Base64加密后): " + body + "\n" +
                     "解密后字符串(Base64解密后): " + plain + "\n" +
                     "消耗时间: " + consume + "ns , 约 " + consume / 1000000.0f + "ms"

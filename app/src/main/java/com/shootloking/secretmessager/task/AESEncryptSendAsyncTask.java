@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.widget.Toast;
 
-import com.shootloking.secretmessager.encryption.EncryptManger;
+import com.shootloking.secretmessager.encryption.AESEncryptManger;
 import com.shootloking.secretmessager.event.EncryptEvent;
 import com.shootloking.secretmessager.view.base.SMActivity;
 
@@ -14,12 +14,12 @@ import de.greenrobot.event.EventBus;
 /**
  * Created by shau-lok on 3/19/16.
  */
-public class EncryptSendAsyncTask extends AsyncTask<String, Integer, Boolean> {
+public class AESEncryptSendAsyncTask extends AsyncTask<String, Integer, Boolean> {
 
     private ProgressDialog progressDialog;
     private SMActivity activity;
 
-    public EncryptSendAsyncTask(SMActivity activity) {
+    public AESEncryptSendAsyncTask(SMActivity activity) {
         this.activity = activity;
         progressDialog = new ProgressDialog(activity);
     }
@@ -39,7 +39,7 @@ public class EncryptSendAsyncTask extends AsyncTask<String, Integer, Boolean> {
         try {
 //            long start = System.currentTimeMillis();
             long start = System.nanoTime();
-            body = EncryptManger.getInstance().Encrypt(params[0]);
+            body = AESEncryptManger.getInstance().Encrypt(params[0]);
 //            long end = System.currentTimeMillis();
             long end = System.nanoTime();
             long consumeTime = end - start;
