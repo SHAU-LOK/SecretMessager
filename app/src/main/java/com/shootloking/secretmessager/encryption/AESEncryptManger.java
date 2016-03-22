@@ -2,6 +2,7 @@ package com.shootloking.secretmessager.encryption;
 
 import android.util.Base64;
 
+import com.shootloking.secretmessager.utility.JniUtils;
 import com.shootloking.secretmessager.utility.Utils;
 import com.shootloking.secretmessager.utility.log.Debug;
 
@@ -38,7 +39,9 @@ public class AESEncryptManger {
 
     public void initKey() {
         encryption = new AESEncryption();
-        encryption.KeyExpansion(gen16ByteFromStr(KEY));
+        JniUtils jniUtils = new JniUtils();
+        String key = jniUtils.getAESKey();
+        encryption.KeyExpansion(gen16ByteFromStr(key));
     }
 
 
