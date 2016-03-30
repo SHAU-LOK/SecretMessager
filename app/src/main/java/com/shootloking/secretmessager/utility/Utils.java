@@ -29,7 +29,7 @@ public class Utils {
 
 
     public static String DateFormat(Context context, long date) {
-        return new SimpleDateFormat("yyyy-MM-dd h:mm a").format(date);
+        return new SimpleDateFormat("M月dd日 ah:mm").format(date);
     }
 
 

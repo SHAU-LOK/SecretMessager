@@ -86,7 +86,7 @@ public class ConversationListAdapter extends RecyclerCursorAdapter<ConversationL
         int textColor = context.getResources().getColor(R.color.colorBrownLight);
         TextDrawable drawable = TextDrawable.builder().
                 beginConfig().
-                textColor(Color.WHITE).fontSize(70).bold().toUpperCase().
+                textColor(Color.WHITE).fontSize(90).bold().toUpperCase().
                 endConfig().
 //                buildRoundRect(Character.toString(conversation.getContact().getDisplayName().charAt(0)), textColor, 5);
                 buildRound(Character.toString(conversation.getContact().getDisplayName().charAt(0)), textColor);

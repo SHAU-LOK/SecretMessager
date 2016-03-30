@@ -71,7 +71,7 @@ public class ConversationListFragment extends SMFragment {
         EventBus.getDefault().register(this);
 
         adapter = new ConversationListAdapter(getSelfContext());
-        recyclerView.addItemDecoration(new RecycleViewSpacingDecoration(50));
+        recyclerView.addItemDecoration(new RecycleViewSpacingDecoration(15));
         recyclerView.setAdapter(adapter);
 
         initAdapter();
