@@ -1,6 +1,7 @@
 package com.shootloking.secretmessager.view.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.amulyakhare.textdrawable.TextDrawable;
 import com.shootloking.secretmessager.R;
 import com.shootloking.secretmessager.model.Conversation;
 import com.shootloking.secretmessager.utility.Utils;
@@ -51,7 +53,7 @@ public class ConversationListAdapter extends RecyclerCursorAdapter<ConversationL
 
         ConversionListViewHolder holder = new ConversionListViewHolder(view);
 //        holder.logo.setImageResource(R.mipmap.user_avatar);
-        holder.logo.setImageResource(R.mipmap.ic_person);
+//        holder.logo.setImageResource(R.mipmap.ic_person);
 //        holder.logo.setBackgroundResource(R.drawable.person_default_circle_bg);
         return holder;
     }
@@ -80,6 +82,15 @@ public class ConversationListAdapter extends RecyclerCursorAdapter<ConversationL
         holder.name.setText(conversation.getContact().getDisplayName());
         holder.date.setText(Utils.DateFormat(context, conversation.getDate()));
         holder.mData = conversation;
+//        holder.logo.
+        int textColor = context.getResources().getColor(R.color.colorBrownLight);
+        TextDrawable drawable = TextDrawable.builder().
+                beginConfig().
+                textColor(Color.WHITE).fontSize(70).bold().toUpperCase().
+                endConfig().
+//                buildRoundRect(Character.toString(conversation.getContact().getDisplayName().charAt(0)), textColor, 5);
+                buildRound(Character.toString(conversation.getContact().getDisplayName().charAt(0)), textColor);
+        holder.logo.setImageDrawable(drawable);
         if (conversation.getRead() == 1) {
             holder.name.setTextColor(context.getResources().getColor(R.color.conversation_list_item_read));
             holder.date.setTextColor(context.getResources().getColor(R.color.conversation_list_item_read));

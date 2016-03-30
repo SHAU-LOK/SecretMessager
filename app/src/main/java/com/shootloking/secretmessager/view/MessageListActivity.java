@@ -141,7 +141,7 @@ public class MessageListActivity extends SMActivity {
         linearLayoutManager.setStackFromEnd(true);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(linearLayoutManager);
-        adapter = new MessageListAdapter(getSelfContext());
+        adapter = new MessageListAdapter(getSelfContext(), conv.getContact().getDisplayName());
         recyclerView.addItemDecoration(new RecycleViewSpacingDecoration(20));
         recyclerView.setAdapter(adapter);
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {

@@ -22,16 +22,16 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_alignParentLeft="true"
-            android:layout_marginLeft="10dp"
-            android:background="@drawable/person_default_circle_bg" />
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp" />
 
 
         <LinearLayout
             android:id="@+id/message_bg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="50dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="40dp"
             android:layout_toRightOf="@id/user_avatar"
             android:background="@drawable/message_received"
             android:orientation="vertical">

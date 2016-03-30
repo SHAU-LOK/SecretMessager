@@ -3,8 +3,10 @@ package com.shootloking.secretmessager.view.adapter;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.amulyakhare.textdrawable.TextDrawable;
 import com.shootloking.secretmessager.R;
 import com.shootloking.secretmessager.model.Message;
 import com.shootloking.secretmessager.task.AESDecryptAsyncTask;
@@ -38,7 +41,12 @@ public class MessageListAdapter extends RecyclerCursorAdapter<MessageListAdapter
 
 
     public MessageListAdapter(Context context) {
+        this(context, "#");
+    }
+
+    public MessageListAdapter(Context context, String displayName) {
         super(context);
+        this.displayName = !TextUtils.isEmpty(displayName) ? displayName : "#";
     }
 
 
@@ -58,7 +66,15 @@ public class MessageListAdapter extends RecyclerCursorAdapter<MessageListAdapter
         View view = inflater.inflate(Resource, parent, false);
         MessageListViewHolder holder = new MessageListViewHolder(view);
         if (!send) {
-            holder.user_avatar.setImageResource(R.mipmap.ic_person);
+//            holder.user_avatar.setImageResource(R.mipmap.ic_person);
+//            int textColor = context.getResources().getColor(R.color.colorBrownLight);
+//            TextDrawable drawable = TextDrawable.builder().
+//                    beginConfig().
+//                    textColor(Color.WHITE).fontSize(70).bold().toUpperCase().
+//                    endConfig().
+////                buildRoundRect(Character.toString(conversation.getContact().getDisplayName().charAt(0)), textColor, 5);
+//        buildRound(Character.toString(conversation.getContact().getDisplayName().charAt(0)), textColor);
+//            holder.logo.setImageDrawable(drawable);
         }
         return holder;
     }
@@ -68,6 +84,14 @@ public class MessageListAdapter extends RecyclerCursorAdapter<MessageListAdapter
 
 //        Message message = mMessages.get(position);
         Message message = getItem(position);
+        int textColor = context.getResources().getColor(R.color.colorBrownLight);
+        TextDrawable drawable = TextDrawable.builder().
+                beginConfig().
+                textColor(Color.WHITE).fontSize(70).bold().toUpperCase().
+                endConfig().
+                buildRound(Character.toString(displayName.charAt(0)), textColor);
+
+        holder.user_avatar.setImageDrawable(drawable);
         holder.mData = message;
         holder.message_content.setText(message.getBody());
         holder.message_date.setText(Utils.DateFormat(context, message.getDate()));
