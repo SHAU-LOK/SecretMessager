@@ -78,7 +78,7 @@ public class ContactHelper {
     public static Contact getContact(Context context, long recipientId) {
         String number = null;
         try {
-            Cursor cursor = context.getContentResolver().query(ContentUris.withAppendedId(Constants.URI_CAONICAL_ADDRESS, recipientId), null, null, null, null);
+            Cursor cursor = context.getContentResolver().query(ContentUris.withAppendedId(Constants.URI_CANONICAL_ADDRESS, recipientId), null, null, null, null);
 //            Debug.log(TAG, DatabaseUtils.dumpCursorToString(cursor));
             assert cursor != null;
             if (cursor.moveToFirst()) {
@@ -96,7 +96,7 @@ public class ContactHelper {
     public static String getName(Context context, long recipientId) {
         String number = null;
         try {
-            Cursor cursor = context.getContentResolver().query(ContentUris.withAppendedId(Constants.URI_CAONICAL_ADDRESS, recipientId), null, null, null, null);
+            Cursor cursor = context.getContentResolver().query(ContentUris.withAppendedId(Constants.URI_CANONICAL_ADDRESS, recipientId), null, null, null, null);
             Debug.log(TAG, DatabaseUtils.dumpCursorToString(cursor));
             assert cursor != null;
             if (cursor.moveToFirst()) {

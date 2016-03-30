@@ -6,7 +6,6 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.BaseColumns;
 import android.support.annotation.Nullable;
 import android.telephony.SmsManager;
 import android.text.TextUtils;
@@ -30,8 +29,6 @@ public class SendSmsActivity extends SMActivity {
 
     public static final String MESSAGE_SENT_ACTION = "com.android.mms.transaction.MESSAGE_SENT";
 
-    private static final String[] PROJECTIONS = new String[]{BaseColumns._ID};
-
     private String to;
     private String body;
 
@@ -48,14 +45,12 @@ public class SendSmsActivity extends SMActivity {
     }
 
     private void handleIntent(Intent intent) {
-
         if (parseIntent(intent)) {
             setTheme(android.R.style.Theme_Translucent_NoTitleBar);
             send(to, body);
 
             finish();
         }
-
     }
 
 
@@ -64,7 +59,6 @@ public class SendSmsActivity extends SMActivity {
         if (intent == null) return false;
 
         String data = intent.getDataString();
-//        Debug.log(getPageName(), "Intent getDataString(): " + data);
 
         if (!TextUtils.isEmpty(data) && data.contains(":")) {
             String t = data.split(":")[1];

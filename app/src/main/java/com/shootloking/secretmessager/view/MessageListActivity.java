@@ -164,7 +164,7 @@ public class MessageListActivity extends SMActivity {
         Observable<Cursor> myObservable = Observable.create(new Observable.OnSubscribe<Cursor>() {
             @Override
             public void call(Subscriber<? super Cursor> subscriber) {
-                Cursor cursor = getSelfContext().getContentResolver().query(Uri.withAppendedPath(Uri.parse(Constants.SMS_CONVERSATION_URI), String.valueOf(threadId)), null, null, null, Message.SORT_ASC);
+                Cursor cursor = getSelfContext().getContentResolver().query(Uri.withAppendedPath(Uri.parse(Constants.SMS_CONVERSATION_URI_STR), String.valueOf(threadId)), null, null, null, Message.SORT_ASC);
 //                Debug.log(getPageName(), DatabaseUtils.dumpCursorToString(cursor));
                 if (Utils.isCursorValid(cursor)) {
                     subscriber.onNext(cursor);

@@ -50,7 +50,7 @@ public class Message extends BaseModel {
 //    public static ArrayList<Message> getMessageArrayList(Context context, int threadId, Uri uri) {
 //
 //        ArrayList<Message> messages = new ArrayList<>();
-////        Cursor cursor = context.getContentResolver().query(Uri.parse(Constants.MMS_SMS_URI), null, "where thread_id=" + threadId , null, null);
+////        Cursor cursor = context.getContentResolver().query(Uri.parse(Constants.MMS_URI_STR), null, "where thread_id=" + threadId , null, null);
 //        Cursor cursor = context.getContentResolver().query(Uri.withAppendedPath(Uri.parse("content://sms/conversations"), String.valueOf(threadId)), null, null, null, SORT_ASC);
 ////        Debug.log(TAG , "withAppendedPath:  " + Uri.withAppendedPath(Constants.URI_CONVERSATION, String.valueOf(threadId)).toString());
 //        Debug.log(TAG, DatabaseUtils.dumpCursorToString(cursor));

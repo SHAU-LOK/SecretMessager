@@ -10,7 +10,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -37,9 +36,6 @@ public class MessageListAdapter extends RecyclerCursorAdapter<MessageListAdapter
 
     String displayName;
 
-    ArrayAdapter<String> adapter;
-
-
     public MessageListAdapter(Context context) {
         this(context, "#");
     }
@@ -54,35 +50,19 @@ public class MessageListAdapter extends RecyclerCursorAdapter<MessageListAdapter
     public MessageListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
         int Resource;
-        boolean send;
         if (viewType == INCOMING_ITEM) {
             Resource = R.layout.list_item_message_in;
-            send = false;
         } else {
             Resource = R.layout.list_item_message_out;
-            send = true;
         }
 
         View view = inflater.inflate(Resource, parent, false);
-        MessageListViewHolder holder = new MessageListViewHolder(view);
-        if (!send) {
-//            holder.user_avatar.setImageResource(R.mipmap.ic_person);
-//            int textColor = context.getResources().getColor(R.color.colorBrownLight);
-//            TextDrawable drawable = TextDrawable.builder().
-//                    beginConfig().
-//                    textColor(Color.WHITE).fontSize(70).bold().toUpperCase().
-//                    endConfig().
-////                buildRoundRect(Character.toString(conversation.getContact().getDisplayName().charAt(0)), textColor, 5);
-//        buildRound(Character.toString(conversation.getContact().getDisplayName().charAt(0)), textColor);
-//            holder.logo.setImageDrawable(drawable);
-        }
-        return holder;
+        return new MessageListViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(MessageListViewHolder holder, int position) {
 
-//        Message message = mMessages.get(position);
         Message message = getItem(position);
         int textColor = context.getResources().getColor(R.color.colorBrownLight);
         TextDrawable drawable = TextDrawable.builder().
@@ -134,14 +114,12 @@ public class MessageListAdapter extends RecyclerCursorAdapter<MessageListAdapter
 
         @Override
         public void onClick(View v) {
-//            Toast.makeText(context, "onclick", Toast.LENGTH_SHORT).show();
             showDialog(displayName, mData);
 
         }
 
         @Override
         public boolean onLongClick(View v) {
-//            Toast.makeText(context, "on long click", Toast.LENGTH_SHORT).show();
             showDialog(displayName, mData);
             return true;
         }
@@ -156,33 +134,18 @@ public class MessageListAdapter extends RecyclerCursorAdapter<MessageListAdapter
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
-//                    case MessageListAlertDialog.ENCRYPT_ITEM_TYPE: {
-//                        //加密
-//
-//                        AESEncryptAsyncTask task = new AESEncryptAsyncTask((SMActivity) context);
-//                        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, message.getBody());
-//
-//                        break;
-//                    }
                     case MessageListAlertDialog.AES_DECRYPT_ITEM_TYPE: {
                         //AES解密
 
                         AESDecryptAsyncTask task = new AESDecryptAsyncTask((SMActivity) context);
                         task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, message.getBody());
 
-
                         break;
                     }
-//                    case MessageListAlertDialog.COPY_ITEM_TYPE: {
-//                        //复制
-//                        Toast.makeText(context, "复制功能尚未开发", Toast.LENGTH_SHORT).show();
-//                        break;
-//                    }
                     case MessageListAlertDialog.RSA_DECRYPT_ITEM_TYPE: {
-
+                        //RSA解密
                         RSADecryptAsyncTask tasks = new RSADecryptAsyncTask((SMActivity) context);
                         tasks.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, message.getBody());
-
 
                         break;
                     }
