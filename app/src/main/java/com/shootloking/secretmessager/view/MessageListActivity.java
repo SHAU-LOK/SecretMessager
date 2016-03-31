@@ -116,7 +116,7 @@ public class MessageListActivity extends SMActivity {
             threadId = conv.getThreadId();
             contact = conv.getContact();
             getSupportActionBar().setTitle(conv.getContact().getDisplayName());
-        } catch (ClassCastException e) {
+        } catch (Exception e) {
             Debug.error(getPageName(), e.toString());
             Toast.makeText(getSelfContext(), "解析数据库失败", Toast.LENGTH_SHORT).show();
         }

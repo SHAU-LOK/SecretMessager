@@ -27,8 +27,11 @@ public class Message extends BaseModel {
     private Uri msg_uri;
     private int msg_type; // 1: in 2: out
     private int read;
+
     private Contact contact;
     Context context;
+
+    static Uri mUri;
 
 
     public Message(Context context, Cursor cursor) {
@@ -45,6 +48,16 @@ public class Message extends BaseModel {
 
     public static Message getMessage(Context context, Cursor cursor) {
         return new Message(context, cursor);
+    }
+
+    public static Message getMessage(Context context, Uri mUrii) {
+        mUri = mUrii;
+        Cursor cursor = context.getContentResolver().query(mUrii, null, null, null, null);
+//        Debug.log(TAG, DatabaseUtils.dumpCursorToString(cursor));
+        if (cursor != null) {
+            cursor.moveToFirst();
+        }
+        return getMessage(context, cursor);
     }
 
 //    public static ArrayList<Message> getMessageArrayList(Context context, int threadId, Uri uri) {
@@ -142,5 +155,13 @@ public class Message extends BaseModel {
 
     public void setMsg_type(int msg_type) {
         this.msg_type = msg_type;
+    }
+
+    public Contact getContact() {
+        return contact;
+    }
+
+    public void setContact(Contact contact) {
+        this.contact = contact;
     }
 }

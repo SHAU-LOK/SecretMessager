@@ -1,6 +1,8 @@
 package com.shootloking.secretmessager.receiver;
 
 import android.app.Activity;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -9,15 +11,20 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CallLog;
+import android.support.v4.app.NotificationCompat;
 import android.telephony.SmsMessage;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.shootloking.secretmessager.R;
 import com.shootloking.secretmessager.data.SmsHelper;
 import com.shootloking.secretmessager.event.NotifyReceiveEvent;
 import com.shootloking.secretmessager.event.NotifySentSuccessEvent;
+import com.shootloking.secretmessager.model.Conversation;
+import com.shootloking.secretmessager.model.Message;
 import com.shootloking.secretmessager.utility.Utils;
 import com.shootloking.secretmessager.utility.log.Debug;
+import com.shootloking.secretmessager.view.MessageListActivity;
 import com.shootloking.secretmessager.view.SendSmsActivity;
 
 import de.greenrobot.event.EventBus;
@@ -30,6 +37,8 @@ public class SmsReceiver extends BroadcastReceiver {
     public static final String TAG = "SmsReceiver";
 
     static final String ACTION_SMS_DELIVER = "android.provider.Telephony.SMS_DELIVER";
+
+    public static final int NOTIFICATION_ID_NEW = 1;
 
 
     private static Uri mUri;
@@ -105,7 +114,8 @@ public class SmsReceiver extends BroadcastReceiver {
         Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
 
         if (cursor != null && cursor.moveToFirst()) {
-            // TODO: 2/22/16 提示消息失败
+            Debug.log(TAG, "发送消息失败");
+            Toast.makeText(context, "发送消息失败", Toast.LENGTH_LONG).show();
         }
 
     }
@@ -116,13 +126,36 @@ public class SmsReceiver extends BroadcastReceiver {
 
         if (mUri != null) {
             EventBus.getDefault().post(new NotifyReceiveEvent());
+            updateNotification(context, "有一条新消息");
+            Debug.log(TAG, "发送消息成功");
         }
 
-        // TODO: 2/19/16 提示消息来
     }
 
 
     private static void updateNotification(Context context, String mBody) {
+
+        Message message = Message.getMessage(context, mUri);
+        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        Uri uri;
+        PendingIntent pendingIntent;
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+        Conversation conversation = Conversation.getConversation(context, message.getThread_id());
+        Intent i = new Intent(context, MessageListActivity.class);
+        i.putExtra("conversation", conversation);
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        pendingIntent = PendingIntent.getActivity(context, 0, i, PendingIntent.FLAG_CANCEL_CURRENT);
+
+
+        String title = message.getContact().getDisplayName();
+        String content = message.getBody();
+        builder.setContentTitle(title);
+        builder.setSmallIcon(R.mipmap.ic_launcher);
+        builder.setContentText(content);
+        builder.setContentIntent(pendingIntent);
+
+        manager.notify(NOTIFICATION_ID_NEW, builder.getNotification());
 
 
     }
