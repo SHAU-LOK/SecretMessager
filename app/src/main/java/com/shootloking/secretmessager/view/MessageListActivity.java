@@ -172,7 +172,7 @@ public class MessageListActivity extends SMActivity {
                 }
             }
         });
-        mSubscription = myObservable.subscribeOn(Schedulers.io())
+        mSubscription = myObservable.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Cursor>() {
                     @Override

@@ -152,7 +152,7 @@ public class ConversationListFragment extends SMFragment {
             }
         });
 
-        mSubscription = myObservables.subscribeOn(Schedulers.io())
+        mSubscription = myObservables.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Cursor>() {
                     @Override
