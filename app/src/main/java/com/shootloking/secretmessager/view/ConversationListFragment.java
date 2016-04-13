@@ -143,7 +143,7 @@ public class ConversationListFragment extends SMFragment {
         final Observable<Cursor> myObservables = Observable.create(new Observable.OnSubscribe<Cursor>() {
             @Override
             public void call(Subscriber<? super Cursor> subscriber) {
-                Cursor cursor = getSelfContext().getContentResolver().query(Constants.URI_SIMPLE, Conversation.PROJECTION, Conversation.COLUMN_COUNT + ">0", null, Conversation.SORT_ORDER);
+                Cursor cursor = SMApplication.getInstance().getContentResolver().query(Constants.URI_SIMPLE, Conversation.PROJECTION, Conversation.COLUMN_COUNT + ">0", null, Conversation.SORT_ORDER);
 //                Debug.log(getClassName(), DatabaseUtils.dumpCursorToString(cursor));
                 if (Utils.isCursorValid(cursor)) {
                     subscriber.onNext(cursor);
